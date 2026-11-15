@@ -1,0 +1,52 @@
+﻿#define IDB_SIGN                        0x0b00
+#define IDB_BLACK                       0x0b01
+#define IDB_WHITE                       0x0b02
+#define IDB_GRAY						0x0b03
+#define IDB_HOTBAR						0x0b04
+#define IDB_HOTBAR1						0x0b05
+#define IDB_SIGNW						0x0b06
+#define IDC_MYICON                      0x0c00
+#define IDC_MY4                         0x0c01
+#define IDD_MY4_DIALOG                  0x0d00
+#define IDD_ABOUTBOX                    0x0d01
+#define IDI_MY4                         0x1200
+#define IDI_SMALL                       0x1201
+#define IDM_ABOUT                       0x1600
+#define IDM_EXIT                        0x1601
+#define IDR_MAINFRAME                   0x1b00
+#define IDS_APP_TITLE                   0x1c00
+#define IDB_BEDROCK                     0x2000
+#define IDB_GRSIL                       0x2001
+#define IDB_GRSILTOP                    0x2002
+#define IDB_GRSILBTM                    0x2003
+#define IDB_LGWD                        0x2004
+#define IDB_LGWDTOP                     0x2005
+#define IDB_LGWDBTM                     0x2006
+#define IDB_SAND                        0x2007
+#define IDB_SNSIL                       0x2008
+#define IDB_SNSILTOP                    0x2009
+#define IDB_SNSILBTM                    0x200a
+#define IDB_SOIL                        0x200b
+#define IDB_STONE                       0x200c
+#define IDB_TNT                         0x200d
+#define IDB_WDPLK                       0x200e
+#define IDB_LEAF						0x200f
+#define IDB_GLSTN						0x2010
+#define IDB_GLASS						0x2011
+#define IDB_IRONORE						0x2012
+
+#define IDC_GLSTN						0x400c
+#define IDC_ENDERPEARL					0x400d
+#define IDC_IRONORE						0x400e
+#define IDC_RAWIRON						0x400f
+#define IDC_IRONINGOT					0x4010
+#define IDC_AK47						0x4011
+#define IDC_GRENADE						0x4012
+#define IDC_GUIDEDMISSILE				0x4013
+#define IDC_FALCULA						0x4014
+
+
+#define IDP_BLK							0x3000
+#define IDP_RAIN						0x3001
+#define IDC_STATIC                      -1
+

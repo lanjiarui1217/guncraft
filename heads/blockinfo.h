@@ -1,0 +1,25 @@
+#pragma once
+#include <string>
+#include "../Resource.h"
+typedef unsigned long long ull;
+typedef unsigned blocktype;
+struct block { enum _ { air,bedrock,grasssoil,soil,sand,glass,snowsoil,stone,logwood,woodplank,TNT,leaf,glowstone,ironore,BLOCKNUM }; };
+constexpr ull BLOCKNUM=(ull)block::BLOCKNUM;
+const std::string blockname[BLOCKNUM]={"air","bedrock","grasssoil","soil","sand","glass","snowsoil","stone","logwood","woodplank","TNT","leaf","glowstone","ironore"};
+constexpr int blktexid[BLOCKNUM][6]=
+{
+	{},
+	{IDB_BEDROCK,IDB_BEDROCK,IDB_BEDROCK,IDB_BEDROCK,IDB_BEDROCK,IDB_BEDROCK},
+	{IDB_GRSIL,IDB_GRSIL,IDB_GRSILBTM,IDB_GRSILTOP,IDB_GRSIL,IDB_GRSIL},
+	{IDB_SOIL,IDB_SOIL,IDB_SOIL,IDB_SOIL,IDB_SOIL,IDB_SOIL},
+	{IDB_SAND,IDB_SAND,IDB_SAND,IDB_SAND,IDB_SAND,IDB_SAND},
+	{IDB_GLASS,IDB_GLASS,IDB_GLASS,IDB_GLASS,IDB_GLASS,IDB_GLASS},
+	{IDB_SNSIL,IDB_SNSIL,IDB_SNSILBTM,IDB_SNSILTOP,IDB_SNSIL,IDB_SNSIL},
+	{IDB_STONE,IDB_STONE,IDB_STONE,IDB_STONE,IDB_STONE,IDB_STONE},
+	{IDB_LGWD,IDB_LGWD,IDB_LGWDBTM,IDB_LGWDTOP,IDB_LGWD,IDB_LGWD},
+	{IDB_WDPLK,IDB_WDPLK,IDB_WDPLK,IDB_WDPLK,IDB_WDPLK,IDB_WDPLK},
+	{IDB_TNT,IDB_TNT,IDB_TNT,IDB_TNT,IDB_TNT,IDB_TNT},
+	{IDB_LEAF,IDB_LEAF,IDB_LEAF,IDB_LEAF,IDB_LEAF,IDB_LEAF},
+	{IDB_GLSTN,IDB_GLSTN,IDB_GLSTN,IDB_GLSTN,IDB_GLSTN,IDB_GLSTN},
+	{IDB_IRONORE,IDB_IRONORE,IDB_IRONORE,IDB_IRONORE,IDB_IRONORE,IDB_IRONORE},
+};

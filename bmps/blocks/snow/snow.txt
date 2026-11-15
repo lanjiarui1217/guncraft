@@ -1,0 +1,6 @@
+snow.bmp
+snow.bmp
+snowbottom.bmp
+snowtop.bmp
+snow.bmp
+snow.bmp
