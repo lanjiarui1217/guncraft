@@ -9,11 +9,11 @@
 // #include <d3d9types.h>
 #include "_math.h"
 #include <cassert>
-typedef IDirect3DTexture9* Texture;
-typedef LPDIRECT3DVERTEXBUFFER9 VtxBuf;
-typedef D3DXVECTOR3 fvct;
-typedef D3DXVECTOR2 fvct2;
-typedef D3DXMATRIX fmat;
+// typedef IDirect3DTexture9* Texture;
+// typedef LPDIRECT3DVERTEXBUFFER9 VtxBuf;
+// typedef D3DXVECTOR3 fvct;
+// typedef D3DXVECTOR2 fvct2;
+// typedef D3DXMATRIX fmat;
 constexpr long H=480,W=800;
 
 // ��ά��Ⱦ��
