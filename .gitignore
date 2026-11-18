@@ -24,3 +24,5 @@ Release/
 *.gcfile
 tempgcfile*
 TMP*.txt
+
+.vscode/
