@@ -16,20 +16,27 @@
 #include "heads/Generate.h"
 #include "heads/particle.h"
 #include "heads/item.h"
+#include "heads/mouse.h"
+#include "heads/render.h"
+#include <sys/ioctl.h>
+#include <unistd.h>
 float fps,tps;
 const ull MAX_LOADSTRING=100;
-HWND hwnd;
-HINSTANCE hinst;
+// HWND hwnd;
+// HINSTANCE hinst;
 bool ESC=1,gameover=0;
-TCHAR WndTitle[MAX_LOADSTRING];
-TCHAR WndName[MAX_LOADSTRING];
+// TCHAR WndTitle[MAX_LOADSTRING];
+// TCHAR WndName[MAX_LOADSTRING];
 
-LRESULT CALLBACK WndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam);
-INT_PTR CALLBACK About(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam);
+// LRESULT CALLBACK WndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam);
+// INT_PTR CALLBACK About(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam);
 
 static ull drawnum=0,ticknum=0;
 
-void upd_tick(HWND,UINT,UINT_PTR,DWORD)
+void render(ull h,ull w,RGB** in);
+
+// void upd_tick(HWND,UINT,UINT_PTR,DWORD)
+void upd_tick()
 {
 	static time_t bef=0;
 	tps=1.0f*CLOCKS_PER_SEC/(clock()-bef);
@@ -126,32 +133,32 @@ LRESULT CALLBACK WndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 		// draw-code here!
 		d3ddev->Clear(0,nullptr,D3DCLEAR_TARGET,c,1.0f,0);
 		d3ddev->Clear(0,nullptr,D3DCLEAR_ZBUFFER,c,1.0f,0);
-	//	fvct re(rand(),rand(),rand());
-	//	fvct re(0,0,0);
-	//	fvct cmp=tspl.cmp+re/len(re)*1.0f/16;
-	//	fvct lkt=tspl.lkt+re/len(re)*1.0f/8;
-		//fvct rnd(rand(),rand(),rand());
-		//if(rnd.x==0&&rnd.y==0&&rnd.z==0) rnd.x=1;
-		//rnd/=len(rnd);
-		//if(tspl.angle[2]>89||tspl.angle[2]<-89) rnd*=0.001f;
-		//if(tspl.angle[2]>88||tspl.angle[2]<-88) rnd*=0.0016f;
-		//if(tspl.angle[2]>83||tspl.angle[2]<-83) rnd*=0.002f;
-		//else rnd*=0.02f;
-		//float ln=500.0f;
-		//do
-		//{
-		//	Ray r(tspl.cmp,tspl.lkt,1.0f/24,24*500.0f);
-		//	for(;~r;++r) if(wrld.bxbl(r)) break;
-		//	if(~r)
-		//	{
-		//		ln=len((fvct)r-tspl.cmp);
-		//	}
-		//} while(0);
+		//	fvct re(rand(),rand(),rand());
+		//	fvct re(0,0,0);
+		//	fvct cmp=tspl.cmp+re/len(re)*1.0f/16;
+		//	fvct lkt=tspl.lkt+re/len(re)*1.0f/8;
+			//fvct rnd(rand(),rand(),rand());
+			//if(rnd.x==0&&rnd.y==0&&rnd.z==0) rnd.x=1;
+			//rnd/=len(rnd);
+			//if(tspl.angle[2]>89||tspl.angle[2]<-89) rnd*=0.001f;
+			//if(tspl.angle[2]>88||tspl.angle[2]<-88) rnd*=0.0016f;
+			//if(tspl.angle[2]>83||tspl.angle[2]<-83) rnd*=0.002f;
+			//else rnd*=0.02f;
+			//float ln=500.0f;
+			//do
+			//{
+			//	Ray r(tspl.cmp,tspl.lkt,1.0f/24,24*500.0f);
+			//	for(;~r;++r) if(wrld.bxbl(r)) break;
+			//	if(~r)
+			//	{
+			//		ln=len((fvct)r-tspl.cmp);
+			//	}
+			//} while(0);
 		fvct rnd(0,0,0);
 		float ln=1;
 		fvct cmp=tspl.cmp+rnd;
 		fvct lkt=tspl.lkt+rnd/ln*(ln-15);
-//		float Znear=0.01f,Zfar=1000.0f;// less?
+		//		float Znear=0.01f,Zfar=1000.0f;// less?
 		float tmpfar=max(fabs(cmp.y),fabs(WorldHeight*1.0f-cmp.y));
 		float Zfar=sqrt(tmpfar*tmpfar+Rendersize*Rendersize*1.0f)*1.1f+1.0f;
 		float Znear=(cmp.y<0.0f?(-cmp.y):(cmp.y>WorldHeight*1.0f?(cmp.y-WorldHeight*1.0f):0.0f))*0.9f-1.0f;
@@ -186,9 +193,9 @@ LRESULT CALLBACK WndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 
 		char s[1000];
 		sprintf(s,"x=%.1f y=%.1f z=%.1f\nfps=%d,tps=%d\nangle=%f\nlight_(x,y,z)=%u\n",tspl.p.x,tspl.p.y,tspl.p.z,
-				(int)fps,(int)tps,tspl.angle[2],glight(floor(tspl.p),ZY2));
+			(int)fps,(int)tps,tspl.angle[2],glight(floor(tspl.p),ZY2));
 		Drawtxt(0,0,8,16,s,strlen(s));
-		
+
 		SetTexture(texmidcrs,IDB_GRAY);
 		float x=w/2.0f,y=h/2.0f;
 		float dif1=10,dif2=2;
@@ -236,39 +243,29 @@ LRESULT CALLBACK WndProc(HWND hwnd,UINT msg,WPARAM wParam,LPARAM lParam)
 	return DefWindowProc(hwnd,msg,wParam,lParam);
 }
 
-// “关于”框的消息处理函数。
-INT_PTR CALLBACK About(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
+std::pair<ull,ull> getsize()
 {
-	UNREFERENCED_PARAMETER(lParam);
-	switch(message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
-	case WM_COMMAND:
-		if(LOWORD(wParam)==IDOK||LOWORD(wParam)==IDCANCEL)
-		{
-			EndDialog(hDlg,LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
-	}
-	return (INT_PTR)FALSE;
+	winsize w;
+	if(ioctl(STDOUT_FILENO,TIOCGWINSZ,&w)==0) return {w.ws_row,w.ws_col};
+	else perror("ioctl"),safe_exit();
 }
+
+static volatile std::sig_atomic_t g_stop=0;
+extern "C" void onSigInt(int) { g_stop=1; }
+
 #include "heads/noise.h"
 #include <ctime>
 #include "heads/onfile.h"
-int APIENTRY wWinMain(HINSTANCE hInstance,
-					  HINSTANCE,LPWSTR pcmdline,
-					  int nCmdShow)
+// int APIENTRY wWinMain(HINSTANCE hInstance,
+// 					  HINSTANCE,LPWSTR pcmdline,
+// 					  int nCmdShow)
+int main()
 {
-	//ull len=lstrlenW(pcmdline);
-	//std::string filename;
-	//for(ull i(0);i<len;++i) filename+=(char)pcmdline[i];
-	// 
+    signal(SIGINT,onSigInt);
+    signal(SIGTERM,onSigInt);
+	RenderEnv renderenvobj;
+	MouseEnv mouseenvobj;
 
-	//read(/*filename*/std::string("tempgcfile2.gcfile"));
-	// open when you want to read a file, and you can use the filename from command line
-	
 	vp.emplace_back(fvct(0,0,0));// [-20000,20000]
 	thisind=vp.size()-1;
 	tspl.p.y=200;
@@ -276,22 +273,11 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
 	nowtime=time(NULL);
 	tm p;
 	p=*localtime(&nowtime);
-	//MessageBoxA(nullptr,asctime(&p),"Time",MB_OK);
-	//debug("%s\n",asctime(&p));
+	
 	srand(p.tm_year^p.tm_mon^p.tm_mday^(p.tm_hour*60+p.tm_min*60+p.tm_sec));
 	//srand((rand()<<15)|rand());
 	noisedefseed=rand()|(rand()<<15)|(rand()<<30);
-	// open when you want to open new
 
-	debug("%d\n",noisedefseed);
-	hinst=hInstance;
-	LoadString(hinst,IDS_APP_TITLE,WndTitle,MAX_LOADSTRING);
-	LoadString(hinst,IDC_MY4,WndName,MAX_LOADSTRING);
-	MyRegisterClass(hinst,WndName,WndProc);
-	if(!InitInstance(hinst,nCmdShow,hwnd,WndName,WndTitle)) return FALSE;
-	HACCEL hAccelTable=LoadAccelerators(hinst,MAKEINTRESOURCE(IDC_MY4));
-	//初始化
-	D3D9IniterDeler initd3d9;
 	BlockIniterDeler initblock;
 	ParticleIniterDeler initparticle;
 	ItemIniterDeler initItem;
@@ -300,26 +286,27 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
 	static clock_t st;
 	st=clock();
 	clock_t st2=clock();
-	MSG msg={};
-	while(msg.message!=WM_QUIT)
+	// MSG msg={};
+	const struct timespec tick { 0,2*1000*1000 };
+	while(!g_stop)
 	{
-		while(PeekMessage(&msg,nullptr,0,0,PM_REMOVE))
+		if(!ESC)
 		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			if(GetAsyncKeyState(VK_LBUTTON)&0x8000) if(!ESC) wrld.pick(tspl);
+			if(GetAsyncKeyState(VK_RBUTTON)&0x8000) if(!ESC) wrld.use(tspl);
 		}
-		clock_t del=clock()-st2;st2=clock();
-		if(del) fps=1.0f*CLOCKS_PER_SEC/del;
-		InvalidateRect(hwnd,nullptr,0);
-		if(ESC) continue;
-		if(GetAsyncKeyState(VK_LBUTTON)&0x8000) if(!ESC) wrld.pick(tspl);
-		if(GetAsyncKeyState(VK_RBUTTON)&0x8000) if(!ESC) wrld.use(tspl);
+		pollmouse();
+		if(mouse.dx||mouse.dy)
+		{
+			movecamera(camera,mouse.dx,mouse.dy*2);
+		}
+		clearscreen();
+		rendertriangle(fvct(1,0,0),fvct(0,1,0),fvct(0,0,1),{0,0,255},{255,0,0},{0,255,0});
+		render();
+		nanosleep(&tick,nullptr);
 	}
-	fps=drawnum*CLOCKS_PER_SEC*1.0f/(clock()-st);
-	tps=ticknum*CLOCKS_PER_SEC*1.0f/(clock()-st);
-	if(!ESC) ShowCursor(TRUE),ESC=1;
-	debug("\n\nfps=%.3lf,tps=%.3lf\n\n",fps,tps);
-	save();
-	gameover=1;
-	return (int)msg.wParam;
+	// save();
+	// gameover=1;
+	// return (int)msg.wParam;
+	return 0;
 }

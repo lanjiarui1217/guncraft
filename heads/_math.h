@@ -1,17 +1,9 @@
-// #pragma once
-// #include <windows.h>
-// #include <windowsx.h>
-// #include <d3d9.h>
-// #include <d3dx9.h>
 #ifndef _MATH_H_LJR
 #define _MATH_H_LJR
-#include <utility>
-//#include "direct3d.h"
+#include <bits/stdc++.h>
 typedef unsigned long long ull;
 typedef long long ll;
 
-constexpr float eps=1e-8f;
-inline float len(fvct v) { return sqrtf(v.x*v.x+v.y*v.y+v.z*v.z); }
 
 template<typename T>
 struct vct3
@@ -26,7 +18,7 @@ struct vct3
 	inline vct3(const T& x,const T& y,const T& z) noexcept
 		: x(x),y(y),z(z)
 	{}
-	inline operator fvct() noexcept { return fvct((float)x,(float)y,(float)z); }
+	// inline operator fvct() noexcept { return fvct((float)x,(float)y,(float)z); }
 	inline T& operator[](ull ind) noexcept { return ind==1?x:(ind==2?y:z); }
 	inline const T& operator[](ull ind) const noexcept { return ind==1?x:(ind==2?y:z); }
 	inline vct& operator+=(const vct& b) noexcept { return x+=b.x,y+=b.y,z+=b.z,*this; }
@@ -58,11 +50,13 @@ struct vct3
 
 typedef vct3<double> fvct;
 // typedef D3DXMATRIX fmtx;
+constexpr float eps=1e-8f;
+inline float len(fvct v) { return sqrtf(v.x*v.x+v.y*v.y+v.z*v.z); }
+
+
 
 template<typename T>
 static inline T getmaxofbox() { return 1; }
-template<>
-static inline byte getmaxofbox<byte>() { return 16; }
 
 // AABB ��ײ��
 struct Box

@@ -33,28 +33,37 @@ typedef unsigned char byte;
 #include "particleinfo.h"
 #include "iteminfo.h"
 #include <cassert>
+#include <bits/stdc++.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 //#define DBG
 
 extern float fps,tps;
 extern bool gameover;
 
-template<typename... Args>
-void debug(const char* fmt,Args... args)
-{
-	char s[10000];
-	sprintf(s,fmt,args...);
-	//MessageBoxA(nullptr,s,"Debug",MB_OK);
-	OutputDebugStringA(s);
-}
+constexpr ull screenmaxh=250,screenmaxw=250;
+
+struct RGB { uint8_t r,g,b; };
+
+extern RGB screen[screenmaxh][screenmaxw];
+
+// template<typename... Args>
+// void debug(const char* fmt,Args... args)
+// {
+// 	char s[10000];
+// 	sprintf(s,fmt,args...);
+// 	//MessageBoxA(nullptr,s,"Debug",MB_OK);
+// 	OutputDebugStringA(s);
+// }
 
 
-template<typename... Args>
-void error(const char* fmt,Args... args)
-{
-	char s[10000];
-	sprintf(s,fmt,args...);
-	debug("\n----Error!----\n%s\n----Error!----\n\n",s);
-	throw s;
-}
+// template<typename... Args>
+// void error(const char* fmt,Args... args)
+// {
+// 	char s[10000];
+// 	sprintf(s,fmt,args...);
+// 	debug("\n----Error!----\n%s\n----Error!----\n\n",s);
+// 	throw s;
+// }
 
 
