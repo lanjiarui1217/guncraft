@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "../Resource.h"
+#include "../resource.h"
 typedef unsigned long long ull;
 typedef unsigned particle;
 struct particletype { enum _ { block,rain,PARTICLENUM }; };

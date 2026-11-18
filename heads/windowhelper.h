@@ -1,13 +1,13 @@
-#pragma once
-#include "framework.h"
-#include "../Resource.h"
-typedef LRESULT CALLBACK WndProc_t(HWND,UINT,WPARAM,LPARAM);
+// #pragma once
+// #include "framework.h"
+// #include "../Resource.h"
+// typedef LRESULT CALLBACK WndProc_t(HWND,UINT,WPARAM,LPARAM);
 
-// ´Ó hwnd µ½ hinst µÄÓ³Éä
-extern std::map<HWND,HINSTANCE> hwnd_hinst_mp;
+// // ï¿½ï¿½ hwnd ï¿½ï¿½ hinst ï¿½ï¿½Ó³ï¿½ï¿½
+// extern std::map<HWND,HINSTANCE> hwnd_hinst_mp;
 
-// (hinst,ClassName,WndProc) ´´½¨ÊµÀý
-ATOM MyRegisterClass(HINSTANCE hInstance,WCHAR szWindowClass[],WndProc_t WndProc);
+// // (hinst,ClassName,WndProc) ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½
+// ATOM MyRegisterClass(HINSTANCE hInstance,WCHAR szWindowClass[],WndProc_t WndProc);
 
-// ´´½¨´°¿Ú£¬¸³¸ø hwnd ²¢´´½¨Ó³Éä¡£
-BOOL InitInstance(HINSTANCE hinst,int nCmdShow,HWND& hwnd,WCHAR szWindowClass[],WCHAR szTitle[]);
+// // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ hwnd ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ä¡£
+// BOOL InitInstance(HINSTANCE hinst,int nCmdShow,HWND& hwnd,WCHAR szWindowClass[],WCHAR szTitle[]);

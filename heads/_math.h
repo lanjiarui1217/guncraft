@@ -1,16 +1,14 @@
-#pragma once
-#include <windows.h>
-#include <windowsx.h>
-#include <d3d9.h>
-#include <d3dx9.h>
+// #pragma once
+// #include <windows.h>
+// #include <windowsx.h>
+// #include <d3d9.h>
+// #include <d3dx9.h>
+#ifndef _MATH_H_LJR
+#define _MATH_H_LJR
 #include <utility>
 //#include "direct3d.h"
 typedef unsigned long long ull;
 typedef long long ll;
-
-// D3D9 
-typedef D3DXVECTOR3 fvct;
-typedef D3DXMATRIX fmtx;
 
 constexpr float eps=1e-8f;
 inline float len(fvct v) { return sqrtf(v.x*v.x+v.y*v.y+v.z*v.z); }
@@ -58,12 +56,15 @@ struct vct3
 	}
 };
 
+typedef vct3<double> fvct;
+// typedef D3DXMATRIX fmtx;
+
 template<typename T>
 static inline T getmaxofbox() { return 1; }
 template<>
 static inline byte getmaxofbox<byte>() { return 16; }
 
-// AABB Åö×²Ïä
+// AABB ï¿½ï¿½×²ï¿½ï¿½
 struct Box
 {
 	fvct min,max;
@@ -134,3 +135,4 @@ inline ull vct3hash<T>::operator()(vct3<T> v) const
 }
 
 vct3<ll> floor(const fvct&);
+#endif

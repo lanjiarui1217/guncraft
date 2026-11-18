@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "../Resource.h"
+#include "../resource.h"
 typedef unsigned long long ull;
 typedef unsigned itemtype;
 struct item { enum _ { air,bedrock,grasssoil,soil,sand,glass,snowsoil,stone,logwood,woodplank,

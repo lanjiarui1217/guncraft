@@ -1,20 +1,20 @@
 ﻿#include "heads/4.h"
 #include "heads/framework.h"
-#include <basetsd.h>
-#include <minwindef.h>
-#include <windef.h>
-#include <libloaderapi.h>
-#include <winnt.h>
-#include <WinUser.h>
-#include "Resource.h"
+// #include <basetsd.h>
+// #include <minwindef.h>
+// #include <windef.h>
+// #include <libloaderapi.h>
+// #include <winnt.h>
+// #include <WinUser.h>
+#include "resource.h"
 #include "heads/direct3d.h"
-#include "heads/windowhelper.h"
+// #include "heads/windowhelper.h"
 #include "heads/block.h"
 #include "heads/World.h"
 #include "heads/Entity.h"
 #include "heads/Player.h"
 #include "heads/Generate.h"
-#include "heads/Particle.h"
+#include "heads/particle.h"
 #include "heads/item.h"
 float fps,tps;
 const ull MAX_LOADSTRING=100;

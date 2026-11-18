@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "targetver.h"
-#include <windows.h>
+// #include "targetver.h"
+// #include <windows.h>
 
 typedef unsigned long long ull;
 typedef long long ll;
@@ -9,11 +9,11 @@ typedef unsigned char byte;
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
-#include <tchar.h>
+// #include <tchar.h>
 #include "direct3d.h"
 #include "WorldInfo.h"
 #include "_math.h"
-#include <d2d1.h>
+// #include <d2d1.h>
 #include <cstdio>
 #include <cmath>
 #include <cstdlib>
@@ -26,8 +26,8 @@ typedef unsigned char byte;
 #include <utility>
 #include <unordered_map>
 #include <unordered_set>
-#include <basetsd.h>
-#include <windef.h>
+// #include <basetsd.h>
+// #include <windef.h>
 #include "blockinfo.h"
 #include "biomeinfo.h"
 #include "particleinfo.h"

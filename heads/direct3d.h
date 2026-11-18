@@ -1,10 +1,12 @@
-#pragma once
+// #pragma once
+#ifndef DIRECT3D_H_LJR
+#define DIRECT3D_H_LJR
 #include "framework.h"
-#include <d3d9.h>
-#include <d3dx9.h>
-#include <windows.h>
-#include <windowsx.h>
-#include <d3d9types.h>
+// #include <d3d9.h>
+// #include <d3dx9.h>
+// #include <windows.h>
+// #include <windowsx.h>
+// #include <d3d9types.h>
 #include "_math.h"
 #include <cassert>
 typedef IDirect3DTexture9* Texture;
@@ -14,7 +16,7 @@ typedef D3DXVECTOR2 fvct2;
 typedef D3DXMATRIX fmat;
 constexpr long H=480,W=800;
 
-// ÈýÎ¬äÖÈ¾µã
+// ï¿½ï¿½Î¬ï¿½ï¿½È¾ï¿½ï¿½
 struct Vtx3
 {
 	struct Vertex
@@ -27,7 +29,7 @@ struct Vtx3
 };
 extern Vtx3 vtx3;
 
-// ¶þÎ¬äÖÈ¾µã
+// ï¿½ï¿½Î¬ï¿½ï¿½È¾ï¿½ï¿½
 struct Vtx2
 {
 	struct Vertex
@@ -40,7 +42,7 @@ struct Vtx2
 };
 extern Vtx2 vtx2;
 
-// Direct3D9 äÖÈ¾¹¤¾ß
+// Direct3D9 ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½
 extern LPDIRECT3D9 d3d;
 extern LPDIRECT3DDEVICE9 d3ddev;
 extern LPDIRECT3DVERTEXBUFFER9 vtbf;
@@ -49,8 +51,8 @@ extern VOID* pvd;
 extern Texture letters,lettersw;
 extern Texture graytex;
 
-// Direct3D9 ³õÊ¼»¯Ä£¿é
-// Warning!!! ÔÚ³õÊ¼»¯¾ä±úºó´´½¨
+// Direct3D9 ï¿½ï¿½Ê¼ï¿½ï¿½Ä£ï¿½ï¿½
+// Warning!!! ï¿½Ú³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó´´½ï¿½
 class D3D9IniterDeler
 {
 	static ull downnum;
@@ -59,22 +61,22 @@ public:
 	D3D9IniterDeler();
 	~D3D9IniterDeler();
 };
-// ÃæÔÚ·½¿éÖÐµÄÎ»ÖÃ
+// ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½ï¿½Ðµï¿½Î»ï¿½ï¿½
 // Surface Position
 enum { ZY1,ZY2,XZ1,XZ2,XY1,XY2 };
 typedef int surpos;
 
-// äÖÈ¾ÃæµÄ±ê¼Ç
+// ï¿½ï¿½È¾ï¿½ï¿½Ä±ï¿½ï¿½
 // render surpos
 typedef unsigned char rndsps;
 
-// ´ÓÎ»Í¼×ÊÔ´ [2] ÖÐ´´½¨ÎÆÀí [1]
+// ï¿½ï¿½Î»Í¼ï¿½ï¿½Ô´ [2] ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ [1]
 void SetTexture(Texture&,int);
 
-// ´ÓÎ»Í¼×ÊÔ´ [2] ÖÐ´´½¨ÎÆÀí [1]£¬ÓÐÍ¸Ã÷É« [3]
+// ï¿½ï¿½Î»Í¼ï¿½ï¿½Ô´ [2] ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ [1]ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ï¿½É« [3]
 void SetTexture(Texture&,int,D3DCOLOR);
 
-// ½«ÎÆÀí  [([5],[6]):([7],[8])] »æÖÆµ½ÆÁÄ» [([1],[2]):([3],[4])]
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  [([5],[6]):([7],[8])] ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½Ä» [([1],[2]):([3],[4])]
 // SetTexture!
 void DrawTexture(float,float,float,float,float=0,float=0,float=1,float=1);
 
@@ -109,3 +111,4 @@ bool shdren(vct3<T> v)
 }
 
 bool shdren(fvct v);
+#endif

@@ -1,6 +1,7 @@
-#pragma once
+#ifndef BLOCKINFO_H_LJR
+#define BLOCKINFO_H_LJR
 #include <string>
-#include "../Resource.h"
+#include "../resource.h"
 typedef unsigned long long ull;
 typedef unsigned blocktype;
 struct block { enum _ { air,bedrock,grasssoil,soil,sand,glass,snowsoil,stone,logwood,woodplank,TNT,leaf,glowstone,ironore,BLOCKNUM }; };
@@ -23,3 +24,4 @@ constexpr int blktexid[BLOCKNUM][6]=
 	{IDB_GLSTN,IDB_GLSTN,IDB_GLSTN,IDB_GLSTN,IDB_GLSTN,IDB_GLSTN},
 	{IDB_IRONORE,IDB_IRONORE,IDB_IRONORE,IDB_IRONORE,IDB_IRONORE,IDB_IRONORE},
 };
+#endif
