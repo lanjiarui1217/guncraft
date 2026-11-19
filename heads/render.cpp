@@ -115,12 +115,12 @@ RenderEnv::~RenderEnv()
 
 static double zbuffer[screenmaxh][screenmaxw];
 
-void clearscreen()
+void clearscreen(RGB c={0,0,0})
 {
 	for(ull y=0;y<screenh;++y)
 		for(ull x=0;x<screenw;++x)
 			zbuffer[y][x]=camera.farClip,
-			screen[y][x]={0,0,0};
+			screen[y][x]=c;
 }
 
 /* AIGC start */

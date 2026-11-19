@@ -9,8 +9,8 @@ struct Item
 };
 struct ItemDrawUtil
 {
-	static Texture texture[ITEMNUM],hotbar,hotbar1;
-	static VtxBuf vertexbuffer[ITEMNUM];
+	// static Texture texture[ITEMNUM],hotbar,hotbar1;
+	// static VtxBuf vertexbuffer[ITEMNUM];
 	static void draw();
 };
 

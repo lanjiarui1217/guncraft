@@ -1,7 +1,7 @@
 #pragma once
 #include "framework.h"
 
-// ΚµΜε
+// ΚµοΏ½οΏ½
 struct Entity
 {
 	fvct p,v;
@@ -27,7 +27,7 @@ struct fallsand :Entity
 #include "direct3d.h"
 struct enderpearl :Entity
 {
-	VtxBuf vb;
+	// VtxBuf vb;
 	void* pp=nullptr;
 	static constexpr float g=-12.0f;
 	enderpearl(void*);
@@ -58,8 +58,8 @@ struct actTNT :Entity
 };
 struct AmmoM1943 :Entity
 {
-	VtxBuf vb;
-	Texture tex;
+	// VtxBuf vb;
+	// Texture tex;
 	AmmoM1943(fvct,fvct);
 	void upd();
 	void render();
@@ -68,8 +68,8 @@ struct AmmoM1943 :Entity
 };
 struct Grenade :Entity
 {
-	VtxBuf vb;
-	Texture tex;
+	// VtxBuf vb;
+	// Texture tex;
 	Grenade(fvct,fvct);
 	void upd();
 	void render();

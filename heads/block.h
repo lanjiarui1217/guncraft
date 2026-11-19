@@ -2,7 +2,7 @@
 #include "framework.h"
 #include "_math.h"
 #include "blockinfo.h"
-// ÂÖÀªÏß
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 const Box line[BLOCKNUM]=
 {
 Box(fvct(0,0,0),fvct(0,0,0)),
@@ -20,7 +20,7 @@ Box(),
 Box(),
 Box(),
 };
-// Åö×²Ïä
+// ï¿½ï¿½×²ï¿½ï¿½
 const Box coll[BLOCKNUM]=
 {
 Box(fvct(0,0,0),fvct(0,0,0)),
@@ -38,7 +38,7 @@ Box(),
 Box(),
 Box(),
 };
-// Ö§³ÅÏä
+// Ö§ï¿½ï¿½ï¿½ï¿½
 const Box supp[BLOCKNUM]=
 {
 Box(fvct(0,0,0),fvct(0,0,0)),
@@ -56,7 +56,7 @@ Box(),
 Box(),
 Box(),
 };
-//¹âÑ§Ïä
+//ï¿½ï¿½Ñ§ï¿½ï¿½
 const Box occl[BLOCKNUM]=
 {
 Box(fvct(0,0,0),fvct(0,0,0)),
@@ -74,7 +74,7 @@ Box(fvct(0,0,0),fvct(0,0,0)),
 Box(),
 Box(),
 };
-// »¥¶¯Ïä
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 const Box intr[BLOCKNUM]=
 {
 Box(fvct(0,0,0),fvct(0,0,0)),
@@ -94,34 +94,34 @@ Box(fvct(0,0,0),fvct(0,0,0)),
 };
 static constexpr float Inf=(float)(~0ull);
 
-// ÖÏÏ¢
+// ï¿½ï¿½Ï¢
 const bool suff[BLOCKNUM]		={0,		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,		1};
 
-// ²¿·ÖÍ¸Ã÷
+// ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ï¿½
 const bool trans[BLOCKNUM]		={0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		1,		0,		0};
 
-// µ¼Ìå
+// ï¿½ï¿½ï¿½ï¿½
 const bool cond[BLOCKNUM]		={0,		1,		1,		1,		1,		0,		1,		1,		1,		1,		1,		0,		1,		1};
 
 //
 const bool subs[BLOCKNUM]		={0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0};
 
-// ¹ÌÌå
+// ï¿½ï¿½ï¿½ï¿½
 const bool solid[BLOCKNUM]		={0,		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,		1,		1};
 
-// Ó²¶È
+// Ó²ï¿½ï¿½
 const float hard[BLOCKNUM]		={0.0f,		Inf,	1.0f,	1.0f,	1.0f,	0.3f,	1.0f,	9.0f,	4.0f,	3.0f,	0.0f,	0.2f,	0.3f,	3.0f};
 
-// ±¬Õ¨¿¹ÐÔ
+// ï¿½ï¿½Õ¨ï¿½ï¿½ï¿½ï¿½
 const float boomhard[BLOCKNUM]	={0.0f,		Inf,	0.6f,	0.5f,	0.5f,	0.3f,	0.5f,	6.0f,	2.0f,	3.0f,	0.0f,	0.2f,	1.5f,	3.0f};
 
-// Í¸¹â¶È
+// Í¸ï¿½ï¿½ï¿½
 const unsigned trslt[BLOCKNUM]	={0,		16,		16,		16,		16,		0,		16,		16,		16,		16,		16,		1,		0,		0};
 
-// ÁÁ¶È
+// ï¿½ï¿½ï¿½ï¿½
 const unsigned light[BLOCKNUM]	={0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		0,		15,		0};
 
-// µôÂäÎï
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 const itemtype blkdrop[BLOCKNUM]=
 {
 	item::air,item::bedrock,item::grasssoil,item::soil,item::sand,item::glass,
@@ -130,34 +130,34 @@ const itemtype blkdrop[BLOCKNUM]=
 };
 
 
-// ·½¿é
+// ï¿½ï¿½ï¿½ï¿½
 struct Block
 {
 	blocktype tp;
 
 	enum direction
 	{
-		// p principal Ö÷Òª
+		// p principal ï¿½ï¿½Òª
 		px0=0u,px1=1u,py0=2u,py1=3u,pz0=4u,pz1=5u,
-		// a auxiliary ¸¨Öú
+		// a auxiliary ï¿½ï¿½ï¿½ï¿½
 		ax0=0u,ax1=8u,ay0=16u,ay1=24u,az0=32u,az1=40u,
-		// sym symmetry ¶Ô³Æ
+		// sym symmetry ï¿½Ô³ï¿½
 		sym=64u
 	};
 
-	// ³¯Ïò
+	// ï¿½ï¿½ï¿½ï¿½
 	unsigned drc;
 
-	// Î»ÖÃ
+	// Î»ï¿½ï¿½
 	fvct pos;
 
-	// ¿É¼û
+	// ï¿½É¼ï¿½
 	rndsps vis;
 
-	// Ìì¹â
+	// ï¿½ï¿½ï¿½
 //	unsigned skylight[6];
 
-	// ·½¿é¹â
+	// ï¿½ï¿½ï¿½ï¿½ï¿½
 //	unsigned blklight[6];
 
 	Block();
@@ -167,17 +167,17 @@ struct Block
 extern unsigned nowskylight;
 inline unsigned glight(vct3<ll>,ull);
 
-// »æÖÆ·½¿é¹¤¾ß
+// ï¿½ï¿½ï¿½Æ·ï¿½ï¿½é¹¤ï¿½ï¿½
 struct BlockDrawUtil
 {
-	static Texture texture[BLOCKNUM][6];
-	static VtxBuf vertexbuffer[BLOCKNUM];
+	// static Texture texture[BLOCKNUM][6];
+	// static VtxBuf vertexbuffer[BLOCKNUM];
 	static void draw(Block,unsigned char dr);
-	static void draw(Block,fmat);
+	// static void draw(Block,fmat);
 	static void drawline(Box);
 };
 
-// ³õÊ¼»¯·½¿é
+// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 class BlockIniterDeler
 {
 	static ull downnum;

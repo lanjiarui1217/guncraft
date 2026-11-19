@@ -39,7 +39,7 @@ struct Camera
 void movecamera(Camera& cm,int dx,int dy);
 
 extern Camera camera;
-void clearscreen();
+void clearscreen(RGB);
 
 fvct pia(const Camera& cm,fvct);
 void renderline(fvct p1,fvct p2,RGB c1,RGB c2);
