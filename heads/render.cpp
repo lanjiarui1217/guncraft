@@ -1,5 +1,8 @@
 #include "render.h"
 #include <termios.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 static termios oldterm;
 static bool term_saved=false;
@@ -51,6 +54,73 @@ static void disableInput()
 RGB screen[screenmaxh][screenmaxw];
 ull screenw,screenh;
 Camera camera;
+
+// ---- 颜色降级 ----
+// 0 = truecolor (\033[38;2;r;g;b m)，1 = 16 色 linux 控制台/串口安全
+static int g_palette=-1; // -1 未初始化
+
+static const char* envp(const char* name)
+{
+	const char* v=getenv(name);
+	return v?v:"";
+}
+
+// linux 控制台 16 色最近色表（0-15）
+static const RGB kConsole16[16]={
+	{0,0,0},{192,0,0},{0,192,0},{192,192,0},{0,0,192},{192,0,192},{0,192,192},{192,192,192},
+	{128,128,128},{255,64,64},{64,255,64},{255,255,64},{64,64,255},{255,64,255},{64,255,255},{255,255,255}};
+// 对应 SGR 前景色（30-37, 90-97）
+static const unsigned char kConsole16Fg[16]={30,31,32,33,34,35,36,37,90,91,92,93,94,95,96,97};
+static const unsigned char kConsole16Bg[16]={40,41,42,43,44,45,46,47,100,101,102,103,104,105,106,107};
+
+static int detectPalette()
+{
+	const char* force=envp("GUNCRAFT_PALETTE");
+	if(*force)
+	{
+		if(!strcmp(force,"16")||!strcmp(force,"console")) return 1;
+		return 0;
+	}
+	const char* term=envp("TERM");
+	const char* ct=envp("COLORTERM");
+	if(!strcmp(ct,"truecolor")||!strcmp(ct,"24bit")) return 0;
+	if(*term)
+	{
+		// linux 内核控制台只支持 16 色 SGR
+		if(!strcmp(term,"linux")) return 1;
+		// dumb/串口/未知：保守用 16 色
+		if(strstr(term,"dumb")||strstr(term,"vt100")||strstr(term,"ansi")) return 1;
+	}
+	return 0; // 其余默认按 truecolor（xterm 系）
+}
+
+static int paletteMode()
+{
+	if(g_palette<0) g_palette=detectPalette();
+	return g_palette;
+}
+
+static int nearestConsole16(int r,int g,int b)
+{
+	long best=~0l;int bi=0;
+	for(int i=0;i<16;++i)
+	{
+		long d=(long)(r-kConsole16[i].r)*(r-kConsole16[i].r)+(long)(g-kConsole16[i].g)*(g-kConsole16[i].g)+(long)(b-kConsole16[i].b)*(b-kConsole16[i].b);
+		if(d<best){best=d;bi=i;}
+	}
+	return bi;
+}
+
+// 追加前景色 SGR，返回当前索引（存入缓存变量由调用方处理）
+static void appendFg(std::string& s,int idx)
+{
+	char t[12]; int n=snprintf(t,sizeof(t),"\033[%um",kConsole16Fg[idx]); s.append(t,(size_t)n);
+}
+static void appendBg(std::string& s,int idx)
+{
+	char t[12]; int n=snprintf(t,sizeof(t),"\033[%um",kConsole16Bg[idx]); s.append(t,(size_t)n);
+}
+
 RenderEnv::RenderEnv()
 {
 	enableInput();
@@ -534,6 +604,7 @@ void render(ull h,ull w,RGB in[screenmaxh][screenmaxw])
 		const RGB* rowT=in[y0];
 		const RGB* rowB=(y0+1<h)?in[y0+1]:in[y0];
 
+		const int use16=paletteMode()==1;
 		for(size_t x=0; x<w; ++x)
 		{
 			RGB t=rowT[x];
@@ -542,6 +613,24 @@ void render(ull h,ull w,RGB in[screenmaxh][screenmaxw])
 			int dr=(int)t.r-(int)b.r;
 			int dg=(int)t.g-(int)b.g;
 			int db=(int)t.b-(int)b.b;
+
+			if(use16)
+			{
+				int ti=nearestConsole16(t.r,t.g,t.b);
+				int bi=nearestConsole16(b.r,b.g,b.b);
+				if(ti==bi)
+				{
+					if(bi!=lastBB){ appendBg(buf,bi); lastBB=bi; lastFR=lastFG=lastFB=-1; }
+					buf.push_back(' ');
+				}
+				else
+				{
+					if(ti!=lastFR){ appendFg(buf,ti); lastFR=ti; }
+					if(bi!=lastBB){ appendBg(buf,bi); lastBB=bi; }
+					buf.append("\xE2\x96\x80",3); // ▀
+				}
+				continue;
+			}
 
 			if(dr*dr+dg*dg+db*db<=27)
 			{
