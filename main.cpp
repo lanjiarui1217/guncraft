@@ -129,7 +129,7 @@ int paint()
 
 	// SetTexture(texmidcrs,IDB_GRAY);
 	float x=screenw/2.0f,y=screenh/2.0f;
-	float dif1=10;
+	float dif1=3;
 	RGB gray({0x80,0x80,0x80});
 	// d3ddev->SetTexture(0,texmidcrs);
 	renderline0(fvct((x-dif1),y,0),fvct((x+dif1),(y),0),gray,gray);
