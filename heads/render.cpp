@@ -398,7 +398,7 @@ void renderline(fvct p1,fvct p2,RGB c1,RGB c2) { renderline0(pia(camera,p1),pia(
 static void clipNear(const fvct& p1,const fvct& p2,const fvct& p3,
                      const RGB& c1,const RGB& c2,const RGB& c3,
                      const fvct& f,const fvct& r,const fvct& u,const Camera& cm,
-                     fvct out[3],RGB cout[3],int& nout)
+                     fvct out[4],RGB cout[4],int& nout)
 {
 	fvct pts[3]={p1,p2,p3};
 	RGB  cols[3]={c1,c2,c3};
