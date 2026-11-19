@@ -57,8 +57,8 @@ RenderEnv::RenderEnv()
 
 	fputs(
 		"\033[?25l"
-		"\033[?7l"
-				stdout
+		"\033[?7l",
+		stdout
 	);
 
 	fflush(stdout);
