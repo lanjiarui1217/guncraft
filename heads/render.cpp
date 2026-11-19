@@ -118,6 +118,25 @@ void clearscreen(RGB c={0,0,0})
 }
 
 /* AIGC start */
+// 相机基向量（内部辅助）：返回 forward/right/up
+static bool cameraBasis(const Camera& cm,fvct& f,fvct& r,fvct& u)
+{
+	f=cm.target-cm.pos;
+	double fl=len(f);
+	if(fl<eps) return false;
+	f/=fl;
+	r=fvct(f.y*cm.up.z-f.z*cm.up.y,
+			f.z*cm.up.x-f.x*cm.up.z,
+			f.x*cm.up.y-f.y*cm.up.x);
+	double rl=len(r);
+	if(rl<eps) return false;
+	r/=rl;
+	u=fvct(r.y*f.z-r.z*f.y,
+			r.z*f.x-r.x*f.z,
+			r.x*f.y-r.y*f.x);
+	return true;
+}
+
 fvct pia(const Camera& cm,fvct p)
 {
 	fvct f=cm.target-cm.pos;
@@ -164,6 +183,8 @@ fvct pia(const Camera& cm,fvct p)
 
 	if(z<cm.nearClip||z>cm.farClip)
 		return fvct(NAN,NAN,NAN);
+	// 防止 z 过小导致除以接近 0，屏幕坐标爆炸/残影
+	if(z<0.05) z=0.05;
 
 	double aspect=
 		(double)screenw/(double)screenh;
@@ -373,7 +394,49 @@ void rendertriangle0(fvct p1,fvct p2,fvct p3,RGB c1,RGB c2,RGB c3)
 	}
 }
 void renderline(fvct p1,fvct p2,RGB c1,RGB c2) { renderline0(pia(camera,p1),pia(camera,p2),c1,c2); }
-void rendertriangle(fvct p1,fvct p2,fvct p3,RGB c1,RGB c2,RGB c3) { rendertriangle0(pia(camera,p1),pia(camera,p2),pia(camera,p3),c1,c2,c3); }
+// 在相机空间对 z=nearClip 平面做裁剪，避免近平面穿插时整个三角形消失或投影爆炸
+static void clipNear(const fvct& p1,const fvct& p2,const fvct& p3,
+                     const RGB& c1,const RGB& c2,const RGB& c3,
+                     const fvct& f,const fvct& r,const fvct& u,const Camera& cm,
+                     fvct out[3],RGB cout[3],int& nout)
+{
+	fvct pts[3]={p1,p2,p3};
+	RGB  cols[3]={c1,c2,c3};
+	double zz[3];
+	for(int i(0);i<3;++i){ fvct d=pts[i]-cm.pos; zz[i]=d.x*f.x+d.y*f.y+d.z*f.z; }
+	double np=cm.nearClip<0.05?0.05:cm.nearClip;
+	fvct po[3]; RGB co[3]; int no=0;
+	for(int i(0);i<3;++i)
+	{
+		int j=(i+1)%3;
+		bool inI=zz[i]>=np,inJ=zz[j]>=np;
+		if(inI){ po[no]=pts[i]; co[no]=cols[i]; ++no; }
+		if(inI!=inJ)
+		{
+			double t=(np-zz[i])/(zz[j]-zz[i]);
+			fvct pi(pts[i]+(pts[j]-pts[i])*t);
+			RGB ci{(uint8_t)(cols[i].r+(cols[j].r-cols[i].r)*t),
+			       (uint8_t)(cols[i].g+(cols[j].g-cols[i].g)*t),
+			       (uint8_t)(cols[i].b+(cols[j].b-cols[i].b)*t)};
+			po[no]=pi; co[no]=ci; ++no;
+		}
+	}
+	nout=no;
+	for(int i(0);i<no;++i){ out[i]=po[i]; cout[i]=co[i]; }
+}
+void rendertriangle(fvct p1,fvct p2,fvct p3,RGB c1,RGB c2,RGB c3)
+{
+	fvct f,r,u;
+	if(!cameraBasis(camera,f,r,u)) return;
+	fvct out[4]; RGB co[4]; int nout=0;
+	clipNear(p1,p2,p3,c1,c2,c3,f,r,u,camera,out,co,nout);
+	if(nout==3) rendertriangle0(pia(camera,out[0]),pia(camera,out[1]),pia(camera,out[2]),co[0],co[1],co[2]);
+	else if(nout==4)
+	{
+		rendertriangle0(pia(camera,out[0]),pia(camera,out[1]),pia(camera,out[2]),co[0],co[1],co[2]);
+		rendertriangle0(pia(camera,out[0]),pia(camera,out[2]),pia(camera,out[3]),co[0],co[2],co[3]);
+	}
+}
 
 void movecamera(Camera& cm,int dx,int dy)
 {

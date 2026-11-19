@@ -187,6 +187,7 @@ int main()
 	{
 		pollmouse();
 		pollkeyboard();
+		if(keyboard.keys[KEY_ESC]) g_stop=1;
 		upd_tick();
 		camera.fov=45;
 		if(keyboard.keys[KEY_C]) camera.fov=15;

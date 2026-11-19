@@ -53,9 +53,11 @@ static const FaceV facev[6]=
 
 inline RGB shade(const RGB& c,unsigned vl)
 {
-	// vl: 0~15
-	unsigned l=vl*2+1; // 1~31
-	return {(uint8_t)((c.r*l)/31),(uint8_t)((c.g*l)/31),(uint8_t)((c.b*l)/31)};
+	// vl: 0~15；加环境光下限，避免完全没光照的面变成纯黑
+	const unsigned amb=6; // 约 20% 亮度
+	unsigned l=amb+vl*2; // 6~36
+	if(l>36) l=36;
+	return {(uint8_t)((c.r*l)/36),(uint8_t)((c.g*l)/36),(uint8_t)((c.b*l)/36)};
 }
 
 void BlockDrawUtil::draw(Block b,unsigned char dr)
