@@ -10,16 +10,22 @@ static inline bool GetKeyState(int k)
 	// k>=32 && k<=126 是 ASCII，不能直接当 KEY_* 码用
 	if(k<32||k>126) return keyboard.keys[k];
 	int low=k;
-	if(k>='A'&&k<='Z') { low=k-'A'+KEY_A; }
-	else if(k>='a'&&k<='z') { low=k-'a'+KEY_A; }
-	else if(k>='0'&&k<='9') { low=k-'0'+KEY_1; }
-	else switch(k)
+	switch(k)
 	{
-	case'W': low=KEY_W;break; case'S': low=KEY_S;break;
-	case'A': low=KEY_A;break; case'D': low=KEY_D;break;
-	case'F': low=KEY_F;break; case' ': low=KEY_SPACE;break;
-	case'\x09': low=KEY_TAB;break; case'\x10': low=KEY_LEFTSHIFT;break;
-	default: return false;
+	case'W': case'w': low=KEY_W;break;
+	case'S': case's': low=KEY_S;break;
+	case'A': case'a': low=KEY_A;break;
+	case'D': case'd': low=KEY_D;break;
+	case'F': case'f': low=KEY_F;break;
+	case'Q': case'q': low=KEY_Q;break;
+	case'E': case'e': low=KEY_E;break;
+	case'R': case'r': low=KEY_R;break;
+	case' ': low=KEY_SPACE;break;
+	case'\x09': low=KEY_TAB;break;
+	case'\x10': low=KEY_LEFTSHIFT;break;
+	default:
+		if(k>='0'&&k<='9') { low=k-'0'+KEY_1; break; }
+		return false;
 	}
 	return keyboard.keys[low];
 }
