@@ -405,7 +405,7 @@ static void clipNear(const fvct& p1,const fvct& p2,const fvct& p3,
 	double zz[3];
 	for(int i(0);i<3;++i){ fvct d=pts[i]-cm.pos; zz[i]=d.x*f.x+d.y*f.y+d.z*f.z; }
 	double np=cm.nearClip<0.05?0.05:cm.nearClip;
-	fvct po[3]; RGB co[3]; int no=0;
+	fvct po[4]; RGB co[4]; int no=0;
 	for(int i(0);i<3;++i)
 	{
 		int j=(i+1)%3;
