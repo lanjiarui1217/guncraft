@@ -25,7 +25,7 @@ float fps,tps;
 const ull MAX_LOADSTRING=100;
 // HWND hwnd;
 // HINSTANCE hinst;
-bool ESC=1,gameover=0;
+bool ESC=0,gameover=0;
 // TCHAR WndTitle[MAX_LOADSTRING];
 // TCHAR WndName[MAX_LOADSTRING];
 
@@ -145,6 +145,13 @@ int paint()
 	// EndPaint(hwnd,&ps);
 }
 
+static void update_look()
+{
+	// 鼠标相对位移直接转成玩家角度（度）
+	tspl.angle[1]+=mouse.dx*0.1f;
+	tspl.angle[2]-=mouse.dy*0.1f;
+}
+
 int main()
 {
     signal(SIGINT,onSigInt);
@@ -180,6 +187,7 @@ int main()
 	{
 		pollmouse();
 		pollkeyboard();
+		upd_tick();
 		camera.fov=45;
 		if(keyboard.keys[KEY_C]) camera.fov=15;
 		if(!ESC)
@@ -187,10 +195,7 @@ int main()
 			if(mouse.left) if(!ESC) wrld.pick(tspl);
 			if(mouse.right) if(!ESC) wrld.use(tspl);
 		}
-		if(mouse.dx||mouse.dy)
-		{
-			movecamera(camera,mouse.dx,mouse.dy*2);
-		}
+		update_look();
 		if(keyboard.keys[KEY_UP]&&nowskylight<15u) ++nowskylight;
 		if(keyboard.keys[KEY_DOWN]&&nowskylight) --nowskylight;
 		for(ull i(1);i<=9;++i)
@@ -204,6 +209,9 @@ int main()
 		k%=10; k+=10; k%=10;
 		tspl.chooseind=k;
 		// rendertriangle(fvct(1,0,0),fvct(0,1,0),fvct(0,0,1),{0,0,255},{255,0,0},{0,255,0});
+		camera.pos=tspl.cmp;
+		camera.target=tspl.lkt;
+		camera.up=fvct(0,1,0);
 		paint();
 		render();
 		nanosleep(&tick,nullptr);
