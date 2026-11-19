@@ -54,8 +54,8 @@ static const FaceV facev[6]=
 inline RGB shade(const RGB& c,unsigned vl)
 {
 	// vl: 0~15；加环境光下限，避免完全没光照的面变成纯黑
-	const unsigned amb=6; // 约 20% 亮度
-	unsigned l=amb+vl*2; // 6~36
+	const unsigned amb=18; // 约 50% 亮度下限
+	unsigned l=amb+vl*2; // 18~48
 	if(l>36) l=36;
 	return {(uint8_t)((c.r*l)/36),(uint8_t)((c.g*l)/36),(uint8_t)((c.b*l)/36)};
 }

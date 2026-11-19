@@ -616,8 +616,13 @@ void render(ull h,ull w,RGB in[screenmaxh][screenmaxw])
 
 			if(use16)
 			{
-				int ti=nearestConsole16(t.r,t.g,t.b);
-				int bi=nearestConsole16(b.r,b.g,b.b);
+				// 先统一提亮再量化：内核 16 色里深色阶只有黑/暗红/暗绿...，暗像素会被全部吸附到纯黑
+				int tr=t.r/2+96, tg=t.g/2+96, tb=t.b/2+96;
+				int br=b.r/2+96, bg=b.g/2+96, bb=b.b/2+96;
+				if(tr>255) tr=255; if(tg>255) tg=255; if(tb>255) tb=255;
+				if(br>255) br=255; if(bg>255) bg=255; if(bb>255) bb=255;
+				int ti=nearestConsole16(tr,tg,tb);
+				int bi=nearestConsole16(br,bg,bb);
 				if(ti==bi)
 				{
 					if(bi!=lastBB){ appendBg(buf,bi); lastBB=bi; lastFR=lastFG=lastFB=-1; }
