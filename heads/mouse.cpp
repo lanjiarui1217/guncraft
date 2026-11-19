@@ -9,8 +9,6 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <string>
-#include <ctype.h>
 #include <stdint.h>
 
 Mouse mouse;
@@ -139,61 +137,6 @@ bool initmouse(bool grab)
 
     return false;
 }
-// stdin 方向的 SGR 1006 鼠标序列解析（evdev 不可用时使用）
-// 序列形如 ESC[<Cb;Cx;Cy(M|m)。1003 模式在鼠标移动时持续上报，
-// 用相邻坐标之差计算相对位移。
-static std::string sgrbuf;
-static int lastx=-1,lasty=-1;
-
-static void sgrMouseParse(const char* data,size_t len)
-{
-    sgrbuf.append(data,len);
-    size_t pos=0;
-    while(true)
-    {
-        // 找 ESC[< 起点
-        size_t start=sgrbuf.find("\033[<",pos);
-        if(start==std::string::npos){ sgrbuf.clear(); return; }
-        if(start>0) sgrbuf.erase(0,start);
-        // 找结束符 M 或 m
-        size_t end=std::string::npos;
-        for(size_t i=3;i<sgrbuf.size();++i)
-        {
-            char c=sgrbuf[i];
-            if(c=='M'||c=='m'){ end=i; break; }
-            // 中间只允许数字和分号；遇到别的字节说明不是 SGR 鼠标序列，丢掉这个 ESC
-            if(!isdigit((unsigned char)c)&&c!=';'){ sgrbuf.erase(0,1); pos=0; break; }
-        }
-        if(end==std::string::npos) return; // 不完整，等下次
-        std::string body=sgrbuf.substr(3,end-3);
-        char fin=sgrbuf[end];
-        sgrbuf.erase(0,end+1);
-        int cb=-1,cx=0,cy=0;
-        if(sscanf(body.c_str(),"%d;%d;%d",&cb,&cx,&cy)!=3) continue;
-        bool press=(fin=='M');
-        int btn=cb&0x03;
-        bool motion=(cb&32)!=0;
-        int wheel=(cb&64);
-        if(wheel)
-        {
-            if(press) mouse.wheel+=(wheel==64)?1:-1; // 64=上滚 65=下滚
-            continue;
-        }
-        if(motion)
-        {
-            if(lastx>=0){ mouse.dx+=cx-lastx; mouse.dy+=cy-lasty; }
-            lastx=cx; lasty=cy;
-            continue;
-        }
-        switch(btn)
-        {
-        case 0: mouse.left=press; break;
-        case 1: mouse.middle=press; break;
-        case 2: mouse.right=press; break;
-        }
-    }
-}
-
 void pollmouse()
 {
     mouse.dx=0;
@@ -201,13 +144,7 @@ void pollmouse()
     mouse.wheel=0;
 
     if(mousefd<0)
-    {
-        // evdev 不可用 → 读 stdin 的 SGR 鼠标序列（render.cpp 已开启 1000/1003/1006）
-        char buf[4096];
-        ssize_t n=read(STDIN_FILENO,buf,sizeof(buf));
-        if(n>0) sgrMouseParse(buf,(size_t)n);
         return;
-    }
 
     pollfd pfd{};
     pfd.fd=mousefd;

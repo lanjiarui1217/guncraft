@@ -58,10 +58,7 @@ RenderEnv::RenderEnv()
 	fputs(
 		"\033[?25l"
 		"\033[?7l"
-		"\033[?1000h"
-		"\033[?1003h"
-		"\033[?1006h",
-		stdout
+				stdout
 	);
 
 	fflush(stdout);
@@ -93,9 +90,6 @@ RenderEnv::~RenderEnv()
 	 * 先关闭鼠标报告
 	 */
 	fputs(
-		"\033[?1003l"
-		"\033[?1000l"
-		"\033[?1006l"
 		"\033[0m"
 		"\033[?7h"
 		"\033[?25h",
