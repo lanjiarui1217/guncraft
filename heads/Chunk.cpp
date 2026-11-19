@@ -73,7 +73,7 @@ void Chunk::render(rndsps dr)
 		if(tspl.cmp.z<tz) tmp&=0x1f;
 		ull i=v.x,j=v.y,k=v.z;
 		static ull cnt=0;
-		if(!b[i][j][k].vis) del.push_back(vct3<ull>(i,j,k));
+		if(b[i][j][k].tp==block::air||!b[i][j][k].vis) del.push_back(vct3<ull>(i,j,k));
 		else BlockDrawUtil::draw(b[i][j][k],b[i][j][k].vis&dr&tmp);
 	}
 	for(const auto& v:del) rd.erase(v);

@@ -62,7 +62,7 @@ inline RGB shade(const RGB& c,unsigned vl)
 
 void BlockDrawUtil::draw(Block b,unsigned char dr)
 {
-	if(b.tp>=BLOCKNUM) return;
+	if(b.tp>=BLOCKNUM||b.tp==block::air) return;
 	vct3<ll> ip=floor(b.pos);
 	for(ull i(0);i<6;++i)
 	{

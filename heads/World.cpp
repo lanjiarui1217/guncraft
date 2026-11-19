@@ -53,8 +53,9 @@ void World::_vison(vct3<ll> v)
 
 	//}
 
-	if(vis&&c.b[i][j][k].tp!=block::air) c.rd.insert(vct3<ull>(i,j,k));
-	if((!vis)&&oldvis) c.rd.erase(vct3<ull>(i,j,k));
+	if(c.b[i][j][k].tp==block::air) c.rd.erase(vct3<ull>(i,j,k));
+	else if(vis) c.rd.insert(vct3<ull>(i,j,k));
+	else if((!vis)&&oldvis) c.rd.erase(vct3<ull>(i,j,k));
 }
 
 
@@ -134,8 +135,9 @@ void World::vison(vct3<ll> v)
 	if(k==0&&occl[getbl(v-vct3<ll>(0,0,1)).tp][XY2]) vis&=~(1<<XY1);
 	if(i+1==Chunksize&&occl[getbl(v+vct3<ll>(1,0,0)).tp][ZY1]) vis&=~(1<<ZY2);
 	if(k+1==Chunksize&&occl[getbl(v+vct3<ll>(0,0,1)).tp][XY1]) vis&=~(1<<XY2);
-	if(vis&&c.b[i][j][k].tp!=block::air) c.rd.insert(vct3<ull>(i,j,k));
-	if((!vis)&&oldvis) c.rd.erase(vct3<ull>(i,j,k));
+	if(c.b[i][j][k].tp==block::air) c.rd.erase(vct3<ull>(i,j,k));
+	else if(vis) c.rd.insert(vct3<ull>(i,j,k));
+	else if((!vis)&&oldvis) c.rd.erase(vct3<ull>(i,j,k));
 }
 
 #include "Generate.h"
