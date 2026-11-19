@@ -110,8 +110,8 @@ void Player::updatepos(float dfv,float dt)
 	fvct to(0,0,0);
 	if(GetKeyState('W')) to+=fvct(cosa,0,sina);
 	if(GetKeyState('S')) to+=fvct(-cosa,0,-sina);
-	if(GetKeyState('A')) to+=fvct(-sina,0,cosa);
-	if(GetKeyState('D')) to+=fvct(sina,0,-cosa);
+	if(GetKeyState('A')) to+=fvct(sina,0,-cosa);
+	if(GetKeyState('D')) to+=fvct(-sina,0,cosa);
 	if(len(to)>=eps)
 	{
 		to=to/len(to)*dx;
