@@ -147,7 +147,7 @@ void Generate(Chunk& c,WorldType tp)
 					{
 						c.b[i][j][k].tp=block::air;
 					}
-					else mx=max(mx,(unsigned char)j);
+					else mx=std::max(mx,(unsigned char)j);
 				}
 				height[i][k]=mx;
 			}

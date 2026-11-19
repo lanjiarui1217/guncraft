@@ -56,13 +56,13 @@ void Blast(fvct p,float power,World& w,bool expdrop)
 		wrld.vison(v-vct3<ll>(0,0,1));
 		wrld.vison(v+vct3<ll>(0,0,1));
 		if(v.y<0||v.y>=WorldHeight) return;
-		xmn=min(xmn,v.x);
-		zmn=min(zmn,v.z);
-		xmx=max(xmx,v.x);
-		zmx=max(zmx,v.z);
+		xmn=std::min(xmn,v.x);
+		zmn=std::min(zmn,v.z);
+		xmx=std::max(xmx,v.x);
+		zmx=std::max(zmx,v.z);
 		if(expdrop) ve.push_back(new drop(fvct((float)v.x,(float)v.y,(float)v.z)+fvct(0.5,0.5,0.5),blkdrop[tmp]));
 	}
-	wrld.genlight_round(vct3<ll>((xmn+xmx)/2,0,(zmn+zmx)/2),16u+(unsigned)max((xmx-xmn)/2,(zmx-zmn)/2));
+	wrld.genlight_round(vct3<ll>((xmn+xmx)/2,0,(zmn+zmx)/2),16u+(unsigned)std::max((xmx-xmn)/2,(zmx-zmn)/2));
 	float sz=2*power;
 	for(auto pe:ve)
 	{

@@ -48,6 +48,37 @@ struct vct3
 	}
 };
 
+template<typename T>
+struct vct2
+{
+	typedef vct2<T> vct;
+	T x,y;
+	inline vct2() noexcept=default;
+	inline vct2(const T& x,const T& y) noexcept : x(x),y(y) {}
+	inline T& operator[](ull ind) noexcept { return ind==1?x:y; }
+	inline const T& operator[](ull ind) const noexcept { return ind==1?x:y; }
+	inline vct& operator+=(const vct& b) noexcept { return x+=b.x,y+=b.y,*this; }
+	inline vct& operator-=(const vct& b) noexcept { return x-=b.x,y-=b.y,*this; }
+	inline vct& operator*=(T b) noexcept { return x*=b,y*=b,*this; }
+	inline vct& operator/=(T b) noexcept { return x/=b,y/=b,*this; }
+	inline vct operator+() const noexcept { return *this; }
+	inline vct operator-() const noexcept { return vct2(-x,-y); }
+	inline vct operator+(const vct& b) const noexcept { return vct2(x+b.x,y+b.y); }
+	inline vct operator-(const vct& b) const noexcept { return vct2(x-b.x,y-b.y); }
+	inline vct operator*(T b) const noexcept { return vct2(x*b,y*b); }
+	inline vct operator/(T b) const noexcept { return vct2(x/b,y/b); }
+	inline friend vct operator*(const T&b,const vct& a) noexcept { return vct2(a.x*b,a.y*b); }
+	inline bool operator==(const vct& b) const noexcept { return x==b.x&&y==b.y; }
+	inline bool operator!=(const vct& b) const noexcept { return x!=b.x||y!=b.y; }
+	inline bool operator<(const vct& b) const noexcept
+	{
+		if(x!=b.x) return x<b.x;
+		return y<b.y;
+	}
+};
+
+typedef vct2<double> fvct2;
+
 typedef vct3<double> fvct;
 // typedef D3DXMATRIX fmtx;
 constexpr float eps=1e-8f;

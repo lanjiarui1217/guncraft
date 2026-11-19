@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 // #include "targetver.h"
 // #include <windows.h>
 
@@ -41,20 +41,15 @@ typedef unsigned char byte;
 extern float fps,tps;
 extern bool gameover;
 
-constexpr ull screenmaxh=250,screenmaxw=250;
 
-struct RGB { uint8_t r,g,b; };
 
-extern RGB screen[screenmaxh][screenmaxw];
-
-// template<typename... Args>
-// void debug(const char* fmt,Args... args)
-// {
-// 	char s[10000];
-// 	sprintf(s,fmt,args...);
-// 	//MessageBoxA(nullptr,s,"Debug",MB_OK);
-// 	OutputDebugStringA(s);
-// }
+template<typename... Args>
+inline void debug(const char* fmt,Args... args)
+{
+	char s[10000];
+	snprintf(s,sizeof(s),fmt,args...);
+	fprintf(stderr,"%s",s);
+}
 
 
 // template<typename... Args>

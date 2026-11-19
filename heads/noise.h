@@ -11,37 +11,37 @@ public:
 	fvct hash33(fvct position3D);
 	int hash31(fvct position3D);
 	void setseed(int seed=107);
-	//·µ»¹Ëæ»úÖµ 0~1023
+	//è¿”è¿˜éšæœºå€¼ 0~1023
 	int randint(fvct2 position);
-	//·µ»¹Ëæ»úÖµ 0.0f~1.0f
+	//è¿”è¿˜éšæœºå€¼ 0.0f~1.0f
 	float rand(fvct2 position);
-	//ÇóÌİ¶ÈÖµ	
+	//æ±‚æ¢¯åº¦å€¼	
 	float grad(fvct2 vtx,fvct2 position2D);
-	//ÇóÌİ¶ÈÖµ(ÓÅ»¯)
+	//æ±‚æ¢¯åº¦å€¼(ä¼˜åŒ–)
 	float grad_f(fvct2 vtx,fvct2 position2D);
-	//ÊäÈë2D×ø±ê£¬Êä³ö°ØÁÖÔëÉùÖµ[-1,1]
+	//è¾“å…¥2Dåæ ‡ï¼Œè¾“å‡ºæŸæ—å™ªå£°å€¼[-1,1]
 	float perlinNoise(fvct2 position2D);
-	//ÊäÈë2D×ø±ê£¬Êä³övalueÔëÉùÖµ[-1,1]
+	//è¾“å…¥2Dåæ ‡ï¼Œè¾“å‡ºvalueå™ªå£°å€¼[-1,1]
 	float valueNoise(fvct2 position2D);
-	//ÊäÈë2D×ø±ê£¬Êä³ösimplexÔëÉùÖµ[-1,1]
+	//è¾“å…¥2Dåæ ‡ï¼Œè¾“å‡ºsimplexå™ªå£°å€¼[-1,1]
 	float simplexNoise(fvct2 position2D);
-	//ÊäÈë3D×ø±ê£¬Êä³ösimplexÔëÉùÖµ[-1,1]
+	//è¾“å…¥3Dåæ ‡ï¼Œè¾“å‡ºsimplexå™ªå£°å€¼[-1,1]
 	float simplexNoise(fvct position);
-	//Ô¤´¦ÀíÔëÉù£¨Ô¤ÏÈÉèÖÃÈ«¾Ö¶¥µã£©£º³õÊ¼2D×ø±ê£¬¾§¸ñ´óĞ¡
+	//é¢„å¤„ç†å™ªå£°ï¼ˆé¢„å…ˆè®¾ç½®å…¨å±€é¡¶ç‚¹ï¼‰ï¼šåˆå§‹2Dåæ ‡ï¼Œæ™¶æ ¼å¤§å°
 	void prehandlePerlinNoise(fvct2 position2D,int crystalSize);
-	//Ô¤´¦ÀíÔëÉù£¨Ô¤ÏÈÉèÖÃÈ«¾Ö¶¥µã£©£º³õÊ¼2D×ø±ê£¬¾§¸ñ´óĞ¡
+	//é¢„å¤„ç†å™ªå£°ï¼ˆé¢„å…ˆè®¾ç½®å…¨å±€é¡¶ç‚¹ï¼‰ï¼šåˆå§‹2Dåæ ‡ï¼Œæ™¶æ ¼å¤§å°
 	void prehandleValueNoise(fvct2 position2D,int crystalSize);
-	//Ô¤´¦ÀíÔëÉù£¨Ô¤ÏÈÉèÖÃÈ«¾Ö¶¥µã£©£º³õÊ¼2D×ø±ê£¬¾§¸ñ´óĞ¡
+	//é¢„å¤„ç†å™ªå£°ï¼ˆé¢„å…ˆè®¾ç½®å…¨å±€é¡¶ç‚¹ï¼‰ï¼šåˆå§‹2Dåæ ‡ï¼Œæ™¶æ ¼å¤§å°
 	void prehandleSimplexNoise(fvct2 position2D,int crystalSize);
-	//Ô¤´¦ÀíÔëÉù£¨Ô¤ÏÈÉèÖÃÈ«¾Ö¶¥µã£©£º³õÊ¼3D×ø±ê£¬¾§¸ñ´óĞ¡
+	//é¢„å¤„ç†å™ªå£°ï¼ˆé¢„å…ˆè®¾ç½®å…¨å±€é¡¶ç‚¹ï¼‰ï¼šåˆå§‹3Dåæ ‡ï¼Œæ™¶æ ¼å¤§å°
 	void prehandleSimplexNoise(fvct position,int crystalSize);
-	//¶ş½×bezierÇúÏß tÓ¦[0.0f~1.0f]
+	//äºŒé˜¶bezieræ›²çº¿ tåº”[0.0f~1.0f]
 	fvct2 bezier(fvct2 p0,fvct2 p1,fvct2 p2,float t);
-	//Èı½×bezierÇúÏß tÓ¦[0.0f~1.0f]
+	//ä¸‰é˜¶bezieræ›²çº¿ tåº”[0.0f~1.0f]
 	fvct2 bezier(fvct2 p0,fvct2 p1,fvct2 p2,fvct2 p3,float t);
-	////ÈıÎ¬×ø±ê×ªÒ»Î¬×ø±ê£¨Ñ¹Ëõ×ø±ê£©
+	////ä¸‰ç»´åæ ‡è½¬ä¸€ç»´åæ ‡ï¼ˆå‹ç¼©åæ ‡ï¼‰
 	//ull Index(int x,int y,int z=0);
-	////Ò»Î¬×ø±ê×ªÈıÎ¬×ø±ê£¨½âÑ¹×ø±ê£©
+	////ä¸€ç»´åæ ‡è½¬ä¸‰ç»´åæ ‡ï¼ˆè§£å‹åæ ‡ï¼‰
 	//fvct UnIndex(ull index);
 	noise(int=noisedefseed);
 //private:

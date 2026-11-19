@@ -25,8 +25,8 @@ void read(std::string s)
 		thisind=0;
 		time_t nowtime;
 		time(&nowtime);
-		tm p;
-		localtime_s(&p,&nowtime);
+		tm p{};
+	localtime_r(&nowtime,&p);
 		srand(p.tm_year^p.tm_mon^p.tm_mday^p.tm_hour^p.tm_min^p.tm_sec);
 		srand((rand()<<15)|rand());
 		noisedefseed=rand()|(rand()<<15)|(rand()<<30);
@@ -37,8 +37,8 @@ void read(std::string s)
 	{
 		time_t nowtime;
 		time(&nowtime);
-		tm p;
-		localtime_s(&p,&nowtime);
+		tm p{};
+	localtime_r(&nowtime,&p);
 		srand(p.tm_year^p.tm_mon^p.tm_mday^p.tm_hour^p.tm_min^p.tm_sec);
 		srand((rand()<<15)|rand());
 		noisedefseed=rand()|(rand()<<15)|(rand()<<30);

@@ -462,17 +462,16 @@ void World::render()
 		if(z<c.z) dr&=0x1f;
 		c.render(dr);
 	}
-	d3ddev->SetRenderState(D3DRS_CULLMODE,D3DCULL_NONE);
-	d3ddev->SetRenderState(D3DRS_ZWRITEENABLE,FALSE);
 	for(auto& pr:trb)
 	{
 		vct3<ll> ps=pr.second;
 		Chunk& c=*getchunk(ps);
 		vct3<ull> uv=getposChunk(ps);
-		BlockDrawUtil::draw(getbl(ps),0x3f);
+		{
+			Block b=getbl(ps);
+			if(b.tp<block::BLOCKNUM) BlockDrawUtil::draw(b,0x3f);
+		}
 	}
-	d3ddev->SetRenderState(D3DRS_CULLMODE,D3DCULL_CCW);
-	d3ddev->SetRenderState(D3DRS_ZWRITEENABLE,TRUE);
 	trb.clear();
 }
 

@@ -2,7 +2,9 @@
 #pragma warning(disable:4005)
 
 #include "Entity.h"
+#include <cmath>
 #include "block.h"
+#include "render.h"
 #include "World.h"
 #include "_math.h"
 #pragma warning(pop)
@@ -11,15 +13,35 @@ bool Entity::entitymove(fvct move,Box coll,float d)
 {
 	if(len((p+move)-p)<eps) return true;
 	Ray r(p,p+move,d,len(move)/d);
-	for(;~r;++r) if((!(isnan(((fvct)(r)).x)||isnan(((fvct)(r)).y)||isnan(((fvct)(r)).z))&&(!wrld.bxbl(coll+r)))) p=r; else break;
+	for(;~r;++r) if((!(std::isnan(((fvct)(r)).x)||std::isnan(((fvct)(r)).y)||std::isnan(((fvct)(r)).z))&&(!wrld.bxbl(coll+r)))) p=r; else break;
 	return !(~r);
 }
 bool Entity::entitymove(fvct move,float d)
 {
 	if(len((p+move)-p)<eps) return true;
 	Ray r(p,p+move,d,len(move)/d);
-	for(;~r;++r) if((!(isnan(((fvct)(r)).x)||isnan(((fvct)(r)).y)||isnan(((fvct)(r)).z))&&(!wrld.bxbl(r)))) p=r; else break;
+	for(;~r;++r) if((!(std::isnan(((fvct)(r)).x)||std::isnan(((fvct)(r)).y)||std::isnan(((fvct)(r)).z))&&(!wrld.bxbl(r)))) p=r; else break;
 	return !(~r);
+}
+
+
+// 单色阶段：实体画成小立方体
+static void drawentcube(fvct p,float s,RGB c)
+{
+	float x1=p.x-s,x2=p.x+s,y1=p.y-s,y2=p.y+s,z1=p.z-s,z2=p.z+s;
+	const fvct f[6][4]={
+		{{x1,y1,z1},{x1,y1,z2},{x1,y2,z2},{x1,y2,z1}},
+		{{x2,y1,z1},{x2,y2,z1},{x2,y2,z2},{x2,y1,z2}},
+		{{x1,y1,z1},{x2,y1,z1},{x2,y1,z2},{x1,y1,z2}},
+		{{x1,y2,z1},{x1,y2,z2},{x2,y2,z2},{x2,y2,z1}},
+		{{x1,y1,z1},{x1,y2,z1},{x2,y2,z1},{x2,y1,z1}},
+		{{x1,y1,z2},{x2,y1,z2},{x2,y2,z2},{x1,y2,z2}},
+	};
+	for(int i(0);i<6;++i)
+	{
+		rendertriangle(f[i][0],f[i][1],f[i][2],c,c,c);
+		rendertriangle(f[i][0],f[i][2],f[i][3],c,c,c);
+	}
 }
 
 std::vector<Entity*> ve;
@@ -55,19 +77,8 @@ fallsand::~fallsand()
 #include "Player.h"
 enderpearl::enderpearl(void*pp):pp(pp)
 {
-	float w=1.0f/4,h=1.0f/4;
-	VOID* pVoid;
-	Vtx3::Vertex vv[][3]=
-	{
-		{{0,0,0,0,1},{0,h,0,0,0},{w,h,0,1,0}},
-		{{0,0,0,0,1},{w,h,0,1,0},{w,0,0,1,1}},
-	};
-	d3ddev->CreateVertexBuffer(sizeof(vv),0,Vtx3::FVF,D3DPOOL_DEFAULT,&vb,nullptr);
-	vb->Lock(0,0,(void**)&pVoid,0);
-	memcpy(pVoid,vv,sizeof(vv));
-	vb->Unlock();
 	p=((Player*)pp)->cmp;
-	v=((Player*)pp)->v+(((Player*)pp)->lkt-((Player*)pp)->cmp)/len(((Player*)pp)->cmp-((Player*)pp)->lkt)*sqrt(-30*2*g);
+	v=((Player*)pp)->v+(((Player*)pp)->lkt-((Player*)pp)->cmp)/len(((Player*)pp)->lkt-((Player*)pp)->cmp)*sqrt(-30*2*g);
 	coll=Box(fvct(0,0,0),fvct(0,0,0));
 	exist=1;
 }
@@ -80,40 +91,11 @@ void enderpearl::upd()
 }
 void enderpearl::render()
 {
-	unsigned vl;
-//	Block b=wrld.getbl(vct3<ll>((ll)floor(p.x),(ll)floor(p.y),(ll)floor(p.z)));
-	vl=glight(floor(p),rand()%6)*16;
-	d3ddev->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
-	d3ddev->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-	d3ddev->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-	d3ddev->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,0);
-	d3ddev->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TFACTOR);
-	d3ddev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255,vl,vl,vl));
-	d3ddev->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-	d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE);
-	fmat matt,matr,matw;
-	D3DXMatrixTranslation(&matt,p.x,p.y,p.z);
-	fmat r1,r2;
-	fvct up(1.0f,0.0f,0.0f),wup(0.0f,1.0f,0.0f),lk=p-tspl.cmp,c;
-	lk/=len(lk);
-	D3DXMatrixRotationY(&r1,atan2f(lk.x,lk.z));
-	up.x=r1(0,0),up.y=r1(1,0),up.z=r1(2,0);
-	float ax=atan2f(lk.y,sqrt(lk.x*lk.x+lk.z*lk.z));
-	D3DXVec3Cross(&c,&wup,&up); if(c.z<0) ax=-ax;
-	D3DXMatrixRotationAxis(&r2,&up,ax);
-	D3DXMatrixMultiply(&matr,&r2,&r1);
-	D3DXMatrixMultiply(&matw,&matr,&matt);
-	d3ddev->SetTexture(0,ItemDrawUtil::texture[item::ender_pearl]);
-	d3ddev->SetStreamSource(0,vb,0,sizeof(Vtx3::Vertex));
-	d3ddev->SetTransform(D3DTS_WORLD,&matw);
-	d3ddev->DrawPrimitive(D3DPT_TRIANGLELIST,0,2u);
-	d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
+	drawentcube(p,0.1f,{30,180,60});
 }
 
 enderpearl::~enderpearl()
-{
-	if(vb!=nullptr) vb->Release();
-}
+{}
 
 
 drop::drop(fvct ps,itemtype tp):tp(tp)
@@ -179,56 +161,8 @@ void drop::upd()
 
 void drop::render()
 {
-	if(tp==item::rawiron)
-	{
-		fmat mt;
-		fmat mt1,msc,mro,mt2;
-		D3DXMatrixTranslation(&mt1,-0.5f,0.0f,-0.5f);
-		D3DXMatrixScaling(&msc,0.3f,0.3f,0.3f);
-		D3DXMatrixRotationY(&mro,angle);
-		D3DXMatrixTranslation(&mt2,p.x,p.y,p.z);
-		mt=mt1*msc*mro*mt2;
-		d3ddev->SetTransform(D3DTS_WORLD,&mt);
-		d3ddev->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
-		d3ddev->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-		d3ddev->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-		d3ddev->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,0);
-		d3ddev->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TFACTOR);
-		d3ddev->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-		d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE);
-		Block b=wrld.getbl(floor(p));
-		unsigned vl=glight(floor(p),0)*16;
-		for(ull face(1);face<6;++face) vl=max(vl,glight(floor(p),face)*16);
-		d3ddev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255,vl,vl,vl));
-		d3ddev->SetTexture(0,ItemDrawUtil::texture[item::rawiron]);
-		for(ull i(0);i<6;++i)
-		{
-			Vtx3::Vertex vtx[][3]=
-			{
-				{{0.5f,0,0,1,1},{0.5f,0,1,0,1},{0.5f,1,1,0,0}},
-				{{0.5f,0,0,1,1},{0.5f,1,0,1,0},{0.5f,1,1,0,0}},
-				{{0.5f,0,0,1,1},{0.5f,1,1,0,0},{0.5f,0,1,0,1}},
-				{{0.5f,0,0,1,1},{0.5f,1,1,0,0},{0.5f,1,0,1,0}}
-			};
-			d3ddev->DrawPrimitiveUP(D3DPT_TRIANGLELIST,4,vtx,sizeof(Vtx3::Vertex));
-		}
-		d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
-		return ;
-	}
-	fmat mt;
-	fmat mt1,msc,mro,mt2;
-	D3DXMatrixTranslation(&mt1,-0.5f,0,-0.5f);
-	D3DXMatrixScaling(&msc,0.3f,0.3f,0.3f);
-	D3DXMatrixRotationY(&mro,angle);
-	D3DXMatrixTranslation(&mt2,p.x,p.y,p.z);
-	mt=mt1*msc*mro*mt2;
-	Block bins=wrld.getbl(floor(p));
-	Block b=bins;
-	b.tp=toblock[tp];
-	b.drc=0;
-	b.pos=p;
-	b.vis=0x3f;
-	BlockDrawUtil::draw(b,mt);
+	if(tp==item::rawiron) drawentcube(p,0.12f,{200,120,60});
+	else drawentcube(p,0.15f,{255,255,255});
 }
 
 drop::~drop()
@@ -237,7 +171,7 @@ drop::~drop()
 actTNT::actTNT(fvct ps)
 {
 	p=ps;
-	float ang=rand()*2.0f*D3DX_PI/RAND_MAX;
+	float ang=rand()*2.0f*3.14159265358979323846f/RAND_MAX;
 	v=fvct(sin(ang)*0.4f,0.4f,cos(ang)*0.4f);
 	coll=Box();
 	time=4.0f;
@@ -269,19 +203,7 @@ actTNT::~actTNT()
 
 AmmoM1943::AmmoM1943(fvct ps,fvct v_)
 {
-	float w=1.0f/4,h=1.0f/4;
-	VOID* pVoid;
-	Vtx3::Vertex vv[][3]=
-	{
-		{{0,0,0,0,1},{0,h,0,0,0},{w,h,0,1,0}},
-		{{0,0,0,0,1},{w,h,0,1,0},{w,0,0,1,1}},
-	};
-	d3ddev->CreateVertexBuffer(sizeof(vv),0,Vtx3::FVF,D3DPOOL_DEFAULT,&vb,nullptr);
-	vb->Lock(0,0,(void**)&pVoid,0);
-	memcpy(pVoid,vv,sizeof(vv));
-	vb->Unlock();
 	p=ps;v=v_;
-	D3DXCreateTextureFromFile(d3ddev,L"bmps/oth/AmmoM1943.bmp",&tex);
 }
 
 void AmmoM1943::upd()
@@ -292,55 +214,15 @@ void AmmoM1943::upd()
 
 void AmmoM1943::render()
 {
-	unsigned vl=15*16;
-	d3ddev->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
-	d3ddev->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-	d3ddev->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-	d3ddev->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,0);
-	d3ddev->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TFACTOR);
-	d3ddev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255,vl,vl,vl));
-	d3ddev->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-	d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE);
-	fmat matt,matr,matw;
-	D3DXMatrixTranslation(&matt,p.x,p.y,p.z);
-	fmat r1,r2;
-	fvct up(1.0f,0.0f,0.0f),wup(0.0f,1.0f,0.0f),lk=p-tspl.cmp,c;
-	lk/=len(lk);
-	D3DXMatrixRotationY(&r1,atan2f(lk.x,lk.z));
-	up.x=r1(0,0),up.y=r1(1,0),up.z=r1(2,0);
-	float ax=atan2f(lk.y,sqrt(lk.x*lk.x+lk.z*lk.z));
-	D3DXVec3Cross(&c,&wup,&up); if(c.z<0) ax=-ax;
-	D3DXMatrixRotationAxis(&r2,&up,ax);
-	D3DXMatrixMultiply(&matr,&r2,&r1);
-	D3DXMatrixMultiply(&matw,&matr,&matt);
-	d3ddev->SetTexture(0,tex);
-	d3ddev->SetStreamSource(0,vb,0,sizeof(Vtx3::Vertex));
-	d3ddev->SetTransform(D3DTS_WORLD,&matw);
-	d3ddev->DrawPrimitive(D3DPT_TRIANGLELIST,0,2u);
-	d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
+	drawentcube(p,0.06f,{240,220,120});
 }
 
 AmmoM1943::~AmmoM1943()
-{
-	if(vb!=nullptr) vb->Release();
-	if(tex!=nullptr) tex->Release();
-}
+{}
 
 Grenade::Grenade(fvct ps,fvct v_)
 {
-	float w=1.0f/2,h=1.0f/2;
-	VOID* pVoid;
-	Vtx3::Vertex vv[][3]=
-	{
-		{{0,0,0,0,1},{0,h,0,0,0},{w,h,0,1,0}},
-		{{0,0,0,0,1},{w,h,0,1,0},{w,0,0,1,1}},
-	};
-	d3ddev->CreateVertexBuffer(sizeof(vv),0,Vtx3::FVF,D3DPOOL_DEFAULT,&vb,nullptr);
-	vb->Lock(0,0,(void**)&pVoid,0);
-	memcpy(pVoid,vv,sizeof(vv));
-	vb->Unlock();
 	p=ps;v=v_;
-	D3DXCreateTextureFromFile(d3ddev,L"bmps/items/grenade.bmp",&tex);
 }
 
 void Grenade::upd()
@@ -352,55 +234,15 @@ void Grenade::upd()
 
 void Grenade::render()
 {
-	unsigned vl=15*16;
-	d3ddev->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
-	d3ddev->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-	d3ddev->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-	d3ddev->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,0);
-	d3ddev->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TFACTOR);
-	d3ddev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255,vl,vl,vl));
-	d3ddev->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-	d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE);
-	fmat matt,matr,matw;
-	D3DXMatrixTranslation(&matt,p.x,p.y,p.z);
-	fmat r1,r2;
-	fvct up(1.0f,0.0f,0.0f),wup(0.0f,1.0f,0.0f),lk=p-tspl.cmp,c;
-	lk/=len(lk);
-	D3DXMatrixRotationY(&r1,atan2f(lk.x,lk.z));
-	up.x=r1(0,0),up.y=r1(1,0),up.z=r1(2,0);
-	float ax=atan2f(lk.y,sqrt(lk.x*lk.x+lk.z*lk.z));
-	D3DXVec3Cross(&c,&wup,&up); if(c.z<0) ax=-ax;
-	D3DXMatrixRotationAxis(&r2,&up,ax);
-	D3DXMatrixMultiply(&matr,&r2,&r1);
-	D3DXMatrixMultiply(&matw,&matr,&matt);
-	d3ddev->SetTexture(0,tex);
-	d3ddev->SetStreamSource(0,vb,0,sizeof(Vtx3::Vertex));
-	d3ddev->SetTransform(D3DTS_WORLD,&matw);
-	d3ddev->DrawPrimitive(D3DPT_TRIANGLELIST,0,2u);
-	d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
+	drawentcube(p,0.08f,{60,90,60});
 }
 
 Grenade::~Grenade()
-{
-	if(vb!=nullptr) vb->Release();
-	if(tex!=nullptr) tex->Release();
-}
+{}
 
 GuidedMissile::GuidedMissile(fvct ps,fvct v_)
 {
-	//float w=1.0f/2,h=1.0f/2;
-	//VOID* pVoid;
-	//Vtx3::Vertex vv[][3]=
-	//{
-	//	{{0,0,0,0,1},{0,h,0,0,0},{w,h,0,1,0}},
-	//	{{0,0,0,0,1},{w,h,0,1,0},{w,0,0,1,1}},
-	//};
-	//d3ddev->CreateVertexBuffer(sizeof(vv),0,Vtx3::FVF,D3DPOOL_DEFAULT,&vb,nullptr);
-	//vb->Lock(0,0,(void**)&pVoid,0);
-	//memcpy(pVoid,vv,sizeof(vv));
-	//vb->Unlock();
 	p=ps;v=v_;
-	//D3DXCreateTextureFromFile(d3ddev,L"bmps/items/GuidedMissile.bmp",&tex);
 	assert(pmissile==nullptr);
 	pmissile=this;
 }
@@ -418,38 +260,11 @@ void GuidedMissile::upd()
 
 void GuidedMissile::render()
 {
-	//unsigned vl=15*16;
-	//d3ddev->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,0);
-	//d3ddev->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-	//d3ddev->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
-	//d3ddev->SetTextureStageState(1,D3DTSS_TEXCOORDINDEX,0);
-	//d3ddev->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TFACTOR);
-	//d3ddev->SetRenderState(D3DRS_TEXTUREFACTOR,D3DCOLOR_ARGB(255,vl,vl,vl));
-	//d3ddev->SetTextureStageState(1,D3DTSS_COLORARG2,D3DTA_CURRENT);
-	//d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_MODULATE);
-	//fmat matt,matr,matw;
-	//D3DXMatrixTranslation(&matt,p.x,p.y,p.z);
-	//fmat r1,r2;
-	//fvct up(1.0f,0.0f,0.0f),wup(0.0f,1.0f,0.0f),lk=p-tspl.cmp,c;
-	//lk/=len(lk);
-	//D3DXMatrixRotationY(&r1,atan2f(lk.x,lk.z));
-	//up.x=r1(0,0),up.y=r1(1,0),up.z=r1(2,0);
-	//float ax=atan2f(lk.y,sqrt(lk.x*lk.x+lk.z*lk.z));
-	//D3DXVec3Cross(&c,&wup,&up); if(c.z<0) ax=-ax;
-	//D3DXMatrixRotationAxis(&r2,&up,ax);
-	//D3DXMatrixMultiply(&matr,&r2,&r1);
-	//D3DXMatrixMultiply(&matw,&matr,&matt);
-	//d3ddev->SetTexture(0,tex);
-	//d3ddev->SetStreamSource(0,vb,0,sizeof(Vtx3::Vertex));
-	//d3ddev->SetTransform(D3DTS_WORLD,&matw);
-	//d3ddev->DrawPrimitive(D3DPT_TRIANGLELIST,0,2u);
-	//d3ddev->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
+	drawentcube(p,0.15f,{200,200,200});
 }
 
 GuidedMissile::~GuidedMissile()
 {
-	//if(vb!=nullptr) vb->Release();
-	//if(tex!=nullptr) tex->Release();
 	pmissile=nullptr;
 }
 

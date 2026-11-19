@@ -109,6 +109,4 @@ bool shdren(vct3<T> v)
 {
 	return true;
 }
-
-bool shdren(fvct v);
 #endif

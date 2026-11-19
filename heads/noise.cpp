@@ -1,15 +1,15 @@
 #include "noise.h"
 int noisedefseed;
 /*
-//³õÊ¼»¯È«¾Ö¶¥µã
+//åˆå§‹åŒ–å…¨å±€é¡¶ç‚¹
 fvct2 noise::glbvtx[4]={};
 fvct noise::glbvtx3D[3]={};
 
-//³õÊ¼»¯È«¾ÖÆ«ÒÆ
+//åˆå§‹åŒ–å…¨å±€åç§»
 fvct2 noise::glboffset=fvct2(0,0);
 fvct noise::glboffset3D=fvct(0,0,0);
 
-//³õÊ¼»¯È«¾ÖÖÖ×Ó
+//åˆå§‹åŒ–å…¨å±€ç§å­
 int noise::glbseed=0x3e3e7f2b;
 */
 noise::noise(int seed)
@@ -110,10 +110,10 @@ float noise::grad_f(fvct2 vtx,fvct2 p)
 {
 	switch((0x651A6BE1*(int)vtx.x+(int)vtx.y)%4)
 	{
-	case 1: return  p.x+p.y;  //´ú±íÌİ¶ÈÏòÁ¿(1,1)
-	case 2: return -p.x+p.y;  //´ú±íÌİ¶ÈÏòÁ¿(-1,1)
-	case 3: return  p.x-p.y;  //´ú±íÌİ¶ÈÏòÁ¿(1,-1)
-	case 4: return -p.x-p.y;  //´ú±íÌİ¶ÈÏòÁ¿(-1,-1)
+	case 1: return  p.x+p.y;  //ä»£è¡¨æ¢¯åº¦å‘é‡(1,1)
+	case 2: return -p.x+p.y;  //ä»£è¡¨æ¢¯åº¦å‘é‡(-1,1)
+	case 3: return  p.x-p.y;  //ä»£è¡¨æ¢¯åº¦å‘é‡(1,-1)
+	case 4: return -p.x-p.y;  //ä»£è¡¨æ¢¯åº¦å‘é‡(-1,-1)
 	default: return 0; // never happens
 	}
 }
@@ -155,19 +155,19 @@ float noise::simplexNoise(fvct2 p)
 
 	const float K1=0.366025404f; // (sqrt(3)-1)/2;
 	const float K2=0.211324865f; // (3-sqrt(3))/6;
-	//×ø±êÆ«Ğ±
+	//åæ ‡åæ–œ
 	float s=(p.x+p.y)*K1;
 	fvct2 pi=fvct2(floor(p.x+s),floor(p.y+s));
 	float t=(pi.x+pi.y)*K2;
 	fvct2 pf=p-pi+t*fvct2(1,1);
 	fvct2 vtx2offset=(pf.x<pf.y) ? fvct2(0,1) : fvct2(1,0);
 
-	//¶¥µã±ä»»»Øµ¥ĞĞÍø¸ñ¿Õ¼ä
+	//é¡¶ç‚¹å˜æ¢å›å•è¡Œç½‘æ ¼ç©ºé—´
 	fvct2 dist1=pf;
 	fvct2 dist2=pf-vtx2offset+K2*fvct2(1,1);
 	fvct2 dist3=pf-fvct2(1,1)+2*K2*fvct2(1,1);
 
-	//¼ÆËã¹±Ï×¶ÈÈ¡ºÍ
+	//è®¡ç®—è´¡çŒ®åº¦å–å’Œ
 	float hx=0.5f-dist1.x*dist1.x-dist1.y*dist1.y;
 	float hy=0.5f-dist2.x*dist2.x-dist2.y*dist2.y;
 	float hz=0.5f-dist3.x*dist3.x-dist3.y*dist3.y;
@@ -314,19 +314,19 @@ void noise::prehandleSimplexNoise(fvct position,int crystalSize)
 	glboffset3D=position/(float)crystalSize;
 }
 
-//¶ş½×bezierÇúÏß tÓ¦[0.0f~1.0f]
+//äºŒé˜¶bezieræ›²çº¿ tåº”[0.0f~1.0f]
 fvct2 noise::bezier(fvct2 p0,fvct2 p1,fvct2 p2,float t)
 {
 	return ((1-t)*(1-t)*p0+t*(1-t)*p1+t*t*p2);
 }
 
-//Èı½×bezierÇúÏß tÓ¦[0.0f~1.0f]
+//ä¸‰é˜¶bezieræ›²çº¿ tåº”[0.0f~1.0f]
 fvct2 noise::bezier(fvct2 p0,fvct2 p1,fvct2 p2,fvct2 p3,float t)
 {
 	return bezier(p0,p1,p2,t)*(1-t)+bezier(p1,p2,p3,t)*t;
 }
 /*
-//ÈıÎ¬×ø±ê×ªÒ»Î¬×ø±ê£¨Ñ¹Ëõ×ø±ê£©
+//ä¸‰ç»´åæ ‡è½¬ä¸€ç»´åæ ‡ï¼ˆå‹ç¼©åæ ‡ï¼‰
 ull noise::Index(int x,int y,int z)
 {
 	const int offset=16384;
@@ -337,7 +337,7 @@ ull noise::Index(int x,int y,int z)
 	return t;
 }
 
-//Ò»Î¬×ø±ê×ªÈıÎ¬×ø±ê£¨½âÑ¹×ø±ê£©
+//ä¸€ç»´åæ ‡è½¬ä¸‰ç»´åæ ‡ï¼ˆè§£å‹åæ ‡ï¼‰
 fvct noise::UnIndex(ull index)
 {
 	const int offset=16384;

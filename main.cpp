@@ -1,4 +1,4 @@
-﻿#include "heads/4.h"
+#include "heads/4.h"
 #include "heads/framework.h"
 // #include <basetsd.h>
 // #include <minwindef.h>
@@ -33,8 +33,6 @@ bool ESC=1,gameover=0;
 // INT_PTR CALLBACK About(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam);
 
 static ull drawnum=0,ticknum=0;
-
-void render(ull h,ull w,RGB** in);
 
 // void upd_tick(HWND,UINT,UINT_PTR,DWORD)
 void upd_tick()

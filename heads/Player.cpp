@@ -1,6 +1,28 @@
 #include "Player.h"
 #include "World.h"
 #include "block.h"
+#include "keyboard.h"
+#include <cmath>
+#define D3DXToRadian(a) ((float)((a)*3.14159265358979323846/180.0))
+#define D3DX_PI 3.14159265358979323846f
+static inline bool GetKeyState(int k)
+{
+	// k>=32 && k<=126 是 ASCII，不能直接当 KEY_* 码用
+	if(k<32||k>126) return keyboard.keys[k];
+	int low=k;
+	if(k>='A'&&k<='Z') { low=k-'A'+KEY_A; }
+	else if(k>='a'&&k<='z') { low=k-'a'+KEY_A; }
+	else if(k>='0'&&k<='9') { low=k-'0'+KEY_1; }
+	else switch(k)
+	{
+	case'W': low=KEY_W;break; case'S': low=KEY_S;break;
+	case'A': low=KEY_A;break; case'D': low=KEY_D;break;
+	case'F': low=KEY_F;break; case' ': low=KEY_SPACE;break;
+	case'\x09': low=KEY_TAB;break; case'\x10': low=KEY_LEFTSHIFT;break;
+	default: return false;
+	}
+	return keyboard.keys[low];
+}
 
 std::vector<Player> vp;
 ull thisind;
@@ -76,14 +98,14 @@ void Player::updatepos(float dfv,float dt)
 {
 	auto onland=[&]()->bool { return wrld.bxbl(Box(fvct(-1.0f/4,-0.007f,-1.0f/4),fvct(1.0f/4,0,1.0f/4))+p); };
 	const float g=-16;
-	if(GetKeyState(VK_TAB)&0x8000) dfv*=14;
+	if(GetKeyState(KEY_TAB)) dfv*=14;
 	float dx=dfv*dt;
 	float rad=D3DXToRadian(angle[1]),sina=sin(rad),cosa=cos(rad);
 	fvct to(0,0,0);
-	if(GetKeyState('W')&0x8000) to+=fvct(cosa,0,sina);
-	if(GetKeyState('S')&0x8000) to+=fvct(-cosa,0,-sina);
-	if(GetKeyState('A')&0x8000) to+=fvct(-sina,0,cosa);
-	if(GetKeyState('D')&0x8000) to+=fvct(sina,0,-cosa);
+	if(GetKeyState('W')) to+=fvct(cosa,0,sina);
+	if(GetKeyState('S')) to+=fvct(-cosa,0,-sina);
+	if(GetKeyState('A')) to+=fvct(-sina,0,cosa);
+	if(GetKeyState('D')) to+=fvct(sina,0,-cosa);
 	if(len(to)>=eps)
 	{
 		to=to/len(to)*dx;
@@ -94,7 +116,7 @@ void Player::updatepos(float dfv,float dt)
 			Ray r(p,p+move,d,len(move)/d);
 			for(;~r;++r)
 			{
-				if(isnan(((fvct)(r)).x)||isnan(((fvct)(r)).y)||isnan(((fvct)(r)).z)) break;
+				if(std::isnan(((fvct)(r)).x)||std::isnan(((fvct)(r)).y)||std::isnan(((fvct)(r)).z)) break;
 				if(!wrld.bxbl(coll+r)) p=r;
 				else if(onland())
 				{
@@ -119,15 +141,15 @@ void Player::updatepos(float dfv,float dt)
 		//v+=fvct(0,sqrt((-max(j1,j2))*2*g)*dt,0);
 		move2(fvct(to.x,0,0)),move2(fvct(0,0,to.z));
 	}
-	//if(GetKeyState(' ')&0x8000) entitymove(fvct(0,dx,0),coll);
-	if((GetKeyState(' ')&0x8000)&&onland()) p+=fvct(0,0.01f,0),v+=fvct(0,sqrt(((GetKeyState(VK_TAB)&0x8000)?-256:-1.2522)*2*g),0);
-	if(GetKeyState(VK_SHIFT)&0x8000) entitymove(fvct(0,-dx,0),coll);
+	//if(GetKeyState(' ')) entitymove(fvct(0,dx,0),coll);
+	if((GetKeyState(' '))&&onland()) p+=fvct(0,0.01f,0),v+=fvct(0,sqrt(((GetKeyState(KEY_TAB))?-256:-1.2522)*2*g),0);
+	if(keyboard.keys[KEY_LEFTSHIFT]||keyboard.keys[KEY_RIGHTSHIFT]) entitymove(fvct(0,-dx,0),coll);
 	//v*=0.9997f;
 	//v.y-=9.8f*dt;
 	fvct dv(0,0,0);
 	dv.y+=g*dt;
-	// �ʳ�
-	if(GetKeyState('F')&0x8000)
+	// 鞘翅
+	if(GetKeyState('F'))
 	{
 		fvct vo=v;
 		float voh=sqrt(vo.x*vo.x+vo.z*vo.z);
@@ -169,7 +191,7 @@ void Player::updatelkt()
 	if(angle[1]<-180) angle[1]+=360.0f;
 	if(angle[2]>=89.9) angle[2]=89.9f;
 	if(angle[2]<=-89.9) angle[2]=-89.9f;
-	cmp=p+D3DXVECTOR3(0,15.0f/8,0);
+	cmp=p+fvct(0,15.0f/8,0);
 	if(pmissile) cmp=pmissile->p;
 	lkt.x=cmp.x+15*cos(D3DXToRadian(angle[1]))*cos(D3DXToRadian(angle[2]));
 	lkt.z=cmp.z+15*sin(D3DXToRadian(angle[1]))*cos(D3DXToRadian(angle[2]));

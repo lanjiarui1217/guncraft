@@ -1,4 +1,4 @@
-﻿#define IDB_SIGN                        0x0b00
+#define IDB_SIGN                        0x0b00
 #define IDB_BLACK                       0x0b01
 #define IDB_WHITE                       0x0b02
 #define IDB_GRAY						0x0b03

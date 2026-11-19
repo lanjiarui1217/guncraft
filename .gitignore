@@ -1,28 +1,3 @@
-# Visual Studio
-.vs/
-*.user
-*.suo
-*.aps
-*.vcxproj.user
-
-# 构建产物
-x64/
-Debug/
-Release/
-*.exe
-*.obj
-*.pdb
-*.ilk
-*.ipch
-*.idb
-*.tlog
-*.log
-*.recipe
-*.cso
-
-# 其他临时文件
-*.gcfile
-tempgcfile*
-TMP*.txt
-
-.vscode/
+guncraft
+*.bak
+.build-error.log

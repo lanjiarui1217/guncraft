@@ -165,7 +165,7 @@ struct Block
 };
 
 extern unsigned nowskylight;
-inline unsigned glight(vct3<ll>,ull);
+unsigned glight(vct3<ll>,ull);
 
 // ���Ʒ��鹤��
 struct BlockDrawUtil
