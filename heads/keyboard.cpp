@@ -83,7 +83,10 @@ bool initkeyboard()
         );
 
         if(fd<0)
+        {
+            fprintf(stderr,"[evdev] cannot open %s: %s\n",path,strerror(errno));
             continue;
+        }
 
         if(!iskeyboard(fd))
         {

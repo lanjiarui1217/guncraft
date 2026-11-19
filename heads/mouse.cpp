@@ -97,7 +97,10 @@ bool initmouse(bool grab)
         );
 
         if(fd<0)
+        {
+            fprintf(stderr,"[evdev] cannot open %s: %s\n",path,strerror(errno));
             continue;
+        }
 
         if(!ismouse(fd))
         {
