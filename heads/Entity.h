@@ -24,7 +24,7 @@ struct fallsand :Entity
 	inline fvct realpos() { return p+fvct(0.5f,0.5f,0.5f); }
 };
 #include "Player.h"
-#include "direct3d.h"
+#include "render.h"
 struct enderpearl :Entity
 {
 	// VtxBuf vb;

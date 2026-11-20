@@ -7,7 +7,8 @@
 // #include <winnt.h>
 // #include <WinUser.h>
 #include "resource.h"
-#include "heads/direct3d.h"
+#include "heads/render.h"
+// #include "heads/direct3d.h"
 // #include "heads/windowhelper.h"
 #include "heads/block.h"
 #include "heads/World.h"
@@ -18,7 +19,6 @@
 #include "heads/item.h"
 #include "heads/mouse.h"
 #include "heads/keyboard.h"
-#include "heads/render.h"
 #include <sys/ioctl.h>
 #include <unistd.h>
 float fps,tps;

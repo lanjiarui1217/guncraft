@@ -10,7 +10,7 @@ typedef unsigned char byte;
 #include <malloc.h>
 #include <memory.h>
 // #include <tchar.h>
-#include "direct3d.h"
+// #include "direct3d.h"
 #include "WorldInfo.h"
 #include "_math.h"
 // #include <d2d1.h>

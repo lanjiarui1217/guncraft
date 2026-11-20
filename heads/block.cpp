@@ -1,6 +1,6 @@
 #include "block.h"
 #include "render.h"
-#include "direct3d.h"
+#include "render.h"
 #include "World.h"
 #include "../resource.h"
 

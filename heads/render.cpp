@@ -623,26 +623,28 @@ void render(ull h,ull w,RGB in[screenmaxh][screenmaxw])
 
 			if(use16)
 			{
-				// 16 色量化：直接按欧氏距离映射到最近的控制台 16 色，不做归一化
-				// （归一化会把暗色推向亮色区，导致 gnome-terminal 上全灰、tty3 上全黑）
-				int ti=nearestConsole16(t.r,t.g,t.b);
-				int bi=nearestConsole16(b.r,b.g,b.b);
-				// 每个字符都显式设置前景+背景，不依赖上一帧缓存
-				if(ti!=lastFR){ appendFg(buf,ti); lastFR=ti; }
-				if(bi!=lastBB){ appendBg(buf,bi); lastBB=bi; }
-				lastFG=lastFB=ti; lastBG=bi;
-				if(ti==bi)
+				uint avgr=(t.r+b.r)/2;
+				uint avgg=(t.g+b.g)/2;
+				uint avgb=(t.b+b.b)/2;
+				// 前景 = 上半
+				if((int)avgr!=lastFR||(int)avgg!=lastFG||(int)avgb!=lastFB)
 				{
-					buf.push_back(' ');
+					buf.append("\033[38;2;",7);
+					appendUInt(buf,avgr);
+					buf.push_back(';');
+					appendUInt(buf,avgg);
+					buf.push_back(';');
+					appendUInt(buf,avgb);
+					buf.push_back('m');
+					lastFR=avgr;
+					lastFG=avgg;
+					lastFB=avgb;
 				}
-				else
-				{
-					buf.append("\xE2\x96\x80",3); // ▀
-				}
+				buf.append("\xE2\x96\x88",3); // ▀
 				continue;
 			}
 
-			if(dr*dr+dg*dg+db*db<=27)
+			if((!use16)&&dr*dr+dg*dg+db*db<=27)
 			{
 				// 上下近似同色 -> 空格 + 背景色 (省一半字节)
 				if((int)t.r!=lastBR||(int)t.g!=lastBG||(int)t.b!=lastBB)

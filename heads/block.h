@@ -1,5 +1,6 @@
 #pragma once
 #include "framework.h"
+#include "render.h"
 #include "_math.h"
 #include "blockinfo.h"
 // ������

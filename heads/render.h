@@ -46,3 +46,12 @@ void renderline(fvct p1,fvct p2,RGB c1,RGB c2);
 void renderline0(fvct p1,fvct p2,RGB c1,RGB c2);
 void rendertriangle(fvct p1,fvct p2,fvct p3,RGB c1,RGB c2,RGB c3);
 void rendertriangle0(fvct p1,fvct p2,fvct p3,RGB c1,RGB c2,RGB c3);
+
+enum { ZY1,ZY2,XZ1,XZ2,XY1,XY2 };
+typedef int surpos;
+typedef unsigned char rndsps;
+template<typename T>
+bool shdren(vct3<T> v)
+{
+	return true;
+}

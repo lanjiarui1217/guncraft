@@ -1,6 +1,6 @@
 #pragma once
 #include "framework.h"
-#include "direct3d.h"
+#include "render.h"
 #include "block.h"
 #include <set>
 struct Chunk
