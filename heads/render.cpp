@@ -111,6 +111,13 @@ static int nearestConsole16(int r,int g,int b)
 	return bi;
 }
 
+// 16 色模式下的亮度提升：平方根曲线，把暗色从纯黑里拉出来，同时保留色相
+// （不加常数偏移：那样会把所有颜色推向灰色阶，整屏变灰）
+static int lift16(int c)
+{
+	return (int)(255.0*std::sqrt((double)c/255.0));
+}
+
 // 追加前景色 SGR，返回当前索引（存入缓存变量由调用方处理）
 static void appendFg(std::string& s,int idx)
 {
@@ -616,14 +623,10 @@ void render(ull h,ull w,RGB in[screenmaxh][screenmaxw])
 
 			if(use16)
 			{
-				// 16 色量化：先归一化取色相，再按亮度选档，避免暗色全部坍塌到黑
-				int tr=t.r, tg=t.g, tb=t.b;
-				int br=b.r, bg=b.g, bb=b.b;
-				// 归一化：把最亮分量拉到 192，保留色相，把暗色从纯黑中拉出来
-				int m1=std::max({tr,tg,tb}); if(m1>0){ tr=tr*192/m1; tg=tg*192/m1; tb=tb*192/m1; }
-				int m2=std::max({br,bg,bb}); if(m2>0){ br=br*192/m2; bg=bg*192/m2; bb=bb*192/m2; }
-				int ti=nearestConsole16(tr,tg,tb);
-				int bi=nearestConsole16(br,bg,bb);
+				// 16 色量化：直接按欧氏距离映射到最近的控制台 16 色，不做归一化
+				// （归一化会把暗色推向亮色区，导致 gnome-terminal 上全灰、tty3 上全黑）
+				int ti=nearestConsole16(t.r,t.g,t.b);
+				int bi=nearestConsole16(b.r,b.g,b.b);
 				// 每个字符都显式设置前景+背景，不依赖上一帧缓存
 				if(ti!=lastFR){ appendFg(buf,ti); lastFR=ti; }
 				if(bi!=lastBB){ appendBg(buf,bi); lastBB=bi; }
